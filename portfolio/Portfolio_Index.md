@@ -16,7 +16,7 @@ Public-facing inventory of finished projects.
 
 **Demo:** https://pick-or-pass-seven.vercel.app/
 
-**Case study:** [Pick_or_Pass_Case_Study.md](./Pick_or_Pass_Case_Study.md)
+**Write-up:** [README](../README.md)
 
 **Status:** Shipped (v1, May 2026)
 

@@ -273,7 +273,7 @@ Deploy (Phase 5)
 
 - **Live URL:** https://pick-or-pass-seven.vercel.app/
 - **GitHub:** https://github.com/nishanthkadi/pick-or-pass
-- **Portfolio:** `portfolio/Pick_or_Pass_Case_Study.md` + screenshots in `portfolio/assets/pick-or-pass/`
+- **Portfolio:** root `README.md` (merged case study) + screenshots in `portfolio/assets/pick-or-pass/`
 - **Portfolio index** updated; project `README.md` + `06_Retrospective.md` written
 - **UI polish post-deploy:** sample tile spoilers removed, verdict/details unified, listing collapsed by default, photo carousel
 
