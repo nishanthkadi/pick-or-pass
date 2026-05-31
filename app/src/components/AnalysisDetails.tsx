@@ -19,7 +19,6 @@ const ALIGNMENT_LABELS = {
 
 export function AnalysisDetails({ result }: { result: AnalysisResult }) {
   const [copied, setCopied] = useState(false);
-  const topReasons = result.reasons.slice(0, 3);
 
   const copyMessage = async () => {
     try {
@@ -44,23 +43,11 @@ export function AnalysisDetails({ result }: { result: AnalysisResult }) {
         <CardContent className="px-5 py-0">
           <AccordionRoot defaultValue={[]}>
             <AccordionItem value="why" title="Why this grade">
-              <ul className="space-y-2">
-                {topReasons.map((reason, i) => (
+              <ul className="list-disc space-y-1 pl-5">
+                {result.reasons.map((reason, i) => (
                   <li key={i}>{reason.text}</li>
                 ))}
               </ul>
-              {result.reasons.length > 3 && (
-                <details className="mt-3">
-                  <summary className="cursor-pointer font-medium text-accent">
-                    Show all {result.reasons.length} reasons
-                  </summary>
-                  <ul className="mt-2 space-y-2 text-muted">
-                    {result.reasons.slice(3).map((reason, i) => (
-                      <li key={i}>{reason.text}</li>
-                    ))}
-                  </ul>
-                </details>
-              )}
             </AccordionItem>
 
             <AccordionItem value="questions" title="Questions to ask the seller">
@@ -84,10 +71,10 @@ export function AnalysisDetails({ result }: { result: AnalysisResult }) {
             </AccordionItem>
 
             <AccordionItem value="alignment" title="Text vs photo check">
-              <p className="font-semibold">
+              <p className="font-medium text-foreground">
                 {ALIGNMENT_LABELS[result.text_photo_alignment]}
               </p>
-              <p className="mt-2 text-muted">{result.alignment_summary}</p>
+              <p className="mt-2">{result.alignment_summary}</p>
               {result.mismatches.length > 0 && (
                 <ul className="mt-3 space-y-2">
                   {result.mismatches.map((m, i) => (
@@ -103,7 +90,7 @@ export function AnalysisDetails({ result }: { result: AnalysisResult }) {
             </AccordionItem>
 
             <AccordionItem value="limitations" title="What we can't tell from this listing">
-              <ul className="list-disc space-y-1 pl-5 text-muted">
+              <ul className="list-disc space-y-1 pl-5">
                 {result.limitations.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
@@ -111,12 +98,12 @@ export function AnalysisDetails({ result }: { result: AnalysisResult }) {
             </AccordionItem>
 
             <AccordionItem value="research" title="Research before you go">
-              <ul className="list-disc space-y-1 pl-5 text-muted">
+              <ul className="list-disc space-y-1 pl-5">
                 {result.research_recommended.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
               </ul>
-              <p className="mt-4 rounded-lg border border-border bg-background px-3 py-2 text-base italic text-muted">
+              <p className="mt-4 rounded-lg border border-border bg-background px-3 py-2 text-sm italic">
                 {result.future_capability_note}
               </p>
             </AccordionItem>

@@ -40,7 +40,7 @@ export function AccordionItem({
         <Accordion.Trigger
           className={cn(
             "flex min-h-11 w-full items-center justify-between gap-4 py-4 text-left",
-            "text-subsection-title text-foreground",
+            "text-subsection-title font-semibold text-foreground",
             "hover:text-accent focus-visible:rounded-md",
             "[&[data-state=open]>svg]:rotate-180",
           )}
@@ -52,7 +52,7 @@ export function AccordionItem({
           />
         </Accordion.Trigger>
       </Accordion.Header>
-      <Accordion.Content className="overflow-hidden text-base leading-relaxed text-foreground">
+      <Accordion.Content className="overflow-hidden text-sm font-normal leading-relaxed text-muted">
         <div className="pb-4 pr-2">{children}</div>
       </Accordion.Content>
     </Accordion.Item>
