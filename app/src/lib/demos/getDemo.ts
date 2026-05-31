@@ -13,7 +13,7 @@ const demoListingSchema = z.object({
   label: z.string(),
   description: z.string(),
   imageUrls: z.array(z.string()).min(1),
-  hint: z.string(),
+  hint: z.string().optional(),
 });
 
 const manifestSchema = z.record(z.string(), demoListingSchema);

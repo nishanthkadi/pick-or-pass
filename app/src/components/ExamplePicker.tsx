@@ -7,7 +7,7 @@ export type DemoSummary = {
   label: string;
   description: string;
   imageUrl: string;
-  hint: string;
+  photoCount: number;
 };
 
 type ExamplePickerProps = {
@@ -31,7 +31,7 @@ export function ExamplePicker({
         id="examples-heading"
         eyebrow="Samples"
         title="Sample listings"
-        description="Pick one to see the listing details and analysis."
+        description="Pick a listing to see what Pick or Pass would say — verdict revealed after you open it."
       />
 
       <ul className="mt-6 grid list-none gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -59,7 +59,11 @@ export function ExamplePicker({
               </div>
               <div className="px-1 pb-1 pt-3">
                 <p className="text-section-title text-foreground">{demo.label}</p>
-                <p className="mt-1 text-sm text-muted">{demo.hint}</p>
+                <p className="mt-1 text-sm text-muted">
+                  {demo.photoCount === 1
+                    ? "1 photo"
+                    : `${demo.photoCount} photos`}
+                </p>
                 <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-subtle">
                   {demo.description}
                 </p>

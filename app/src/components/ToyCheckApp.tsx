@@ -31,7 +31,7 @@ const DEMO_CATALOG: DemoSummary[] = Object.entries(manifest).map(
     label: entry.label,
     description: entry.description,
     imageUrl: entry.imageUrls[0],
-    hint: entry.hint,
+    photoCount: entry.imageUrls.length,
   }),
 );
 

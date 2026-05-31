@@ -2,14 +2,12 @@
   "listing-1": {
     "label": "Listing 1",
     "description": "Colorful Peppa Pig cruise ship playset includes three character figures and various beach-themed accessories. Plastic ship has multiple levels, bunk beds, and a fold-out side panel revealing a ball pit scene. Set comes with a slide, lounge chairs, a table, and a pool.",
-    "imageUrls": ["/listings/listing-1.jpg"],
-    "hint": "Good — detailed text and a real seller photo"
+    "imageUrls": ["/listings/listing-1.jpg"]
   },
   "listing-2": {
     "label": "Listing 2",
     "description": "Comes with extra characters and vehicles. Meet up in 95123.",
-    "imageUrls": ["/listings/listing-2.jpg"],
-    "hint": "Not sure — sparse text, ask before you drive"
+    "imageUrls": ["/listings/listing-2.jpg"]
   },
   "listing-3": {
     "label": "Listing 3",
@@ -18,8 +16,7 @@
       "/listings/listing-3-1.jpg",
       "/listings/listing-3-2.jpg",
       "/listings/listing-3-3.jpg"
-    ],
-    "hint": "Avoid — missing accessories and best-offer hassle"
+    ]
   },
   "listing-4": {
     "label": "Listing 4",
@@ -28,19 +25,16 @@
       "/listings/listing-4-1.jpg",
       "/listings/listing-4-2.jpg",
       "/listings/listing-4-3.jpg"
-    ],
-    "hint": "Not sure — promising, but confirm price and lights"
+    ]
   },
   "listing-5": {
     "label": "Listing 5",
     "description": "Condition: Used - like new. Think we have all pieces - basically brand new, kids never quite took to it.",
-    "imageUrls": ["/listings/listing-5-1.jpg", "/listings/listing-5-2.jpg"],
-    "hint": "Good — like-new photo plus Amazon screenshot"
+    "imageUrls": ["/listings/listing-5-1.jpg", "/listings/listing-5-2.jpg"]
   },
   "listing-6": {
     "label": "Listing 6",
     "description": "Fair condition. Clean.",
-    "imageUrls": ["/listings/listing-6-1.jpg"],
-    "hint": "Avoid — fair/clean text, visible base damage"
+    "imageUrls": ["/listings/listing-6-1.jpg"]
   }
 }
