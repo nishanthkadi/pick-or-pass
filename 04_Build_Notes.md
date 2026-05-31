@@ -269,6 +269,14 @@ Deploy (Phase 5)
 
 - **listing-3 UI demo:** Promoted — see manifest + `public/listings/` (eval pass confirmed)
 
+### 2026-05-31 — Phase 5 complete (deploy + portfolio)
+
+- **Live URL:** https://pick-or-pass-seven.vercel.app/
+- **GitHub:** https://github.com/nishanthkadi/pick-or-pass
+- **Portfolio:** `05_Portfolio/Pick_or_Pass_Case_Study.md` + screenshots in `05_Portfolio/Assets/Pick or Pass/`
+- **Portfolio index** updated; project `README.md` + `06_Retrospective.md` written
+- **UI polish post-deploy:** sample tile spoilers removed, verdict/details unified, listing collapsed by default, photo carousel
+
 ### 2026-05-31 — Phase 4 complete (eval loop + rubric scorer)
 
 - **6 eval cases** registered (`listing-1` … `listing-6`); **6/6 grade match** after prompt iteration
