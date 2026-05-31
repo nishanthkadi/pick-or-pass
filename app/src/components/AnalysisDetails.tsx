@@ -10,13 +10,6 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import type { AnalysisResult } from "@/lib/schema/analysis";
 import { useState } from "react";
 
-const ALIGNMENT_LABELS = {
-  matches: "Matches",
-  partially_matches: "Partially matches",
-  contradicts: "Contradicts",
-  insufficient_text: "Insufficient text",
-} as const;
-
 export function AnalysisDetails({ result }: { result: AnalysisResult }) {
   const [copied, setCopied] = useState(false);
 
@@ -67,25 +60,6 @@ export function AnalysisDetails({ result }: { result: AnalysisResult }) {
                     {copied ? "Copied to clipboard" : "Copy message to seller"}
                   </Button>
                 </div>
-              )}
-            </AccordionItem>
-
-            <AccordionItem value="alignment" title="Text vs photo check">
-              <p className="font-medium text-foreground">
-                {ALIGNMENT_LABELS[result.text_photo_alignment]}
-              </p>
-              <p className="mt-2">{result.alignment_summary}</p>
-              {result.mismatches.length > 0 && (
-                <ul className="mt-3 space-y-2">
-                  {result.mismatches.map((m, i) => (
-                    <li
-                      key={i}
-                      className="rounded-lg border border-warning-border bg-warning-bg px-3 py-2 text-warning-text"
-                    >
-                      {m.issue}
-                    </li>
-                  ))}
-                </ul>
               )}
             </AccordionItem>
 
