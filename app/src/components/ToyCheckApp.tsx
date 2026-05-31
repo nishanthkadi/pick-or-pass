@@ -14,6 +14,7 @@ import manifest from "@/data/demos/manifest.json";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type View = "home" | "examples" | "analyze" | "results";
+type ResultsSource = "demo" | "analyze";
 
 type DemoApiResponse = {
   listing: DemoListing;
@@ -62,6 +63,9 @@ export function ToyCheckApp() {
   const [listingContext, setListingContext] =
     useState<ListingContextData | null>(null);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [resultsSource, setResultsSource] = useState<ResultsSource | null>(
+    null,
+  );
 
   const uploadPreviewUrls = useMemo(
     () => images.map((file) => URL.createObjectURL(file)),
@@ -89,6 +93,12 @@ export function ToyCheckApp() {
     }
   }, [view, listingContext, analysis, markResultsViewed]);
 
+  useEffect(() => {
+    if (view !== "results" || resultsSource !== "demo" || !listingContext) {
+      return;
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [view, resultsSource, listingContext]);
 
   const resetError = () => {
     setError(null);
@@ -97,6 +107,7 @@ export function ToyCheckApp() {
 
   const goHome = () => {
     resetError();
+    setResultsSource(null);
     setView("home");
     setShowByok(false);
   };
@@ -121,6 +132,7 @@ export function ToyCheckApp() {
         imageUrls: demo.listing.imageUrls,
       });
       setAnalysis(demo.analysis);
+      setResultsSource("demo");
       setView("results");
     } catch (err) {
       setError(
@@ -176,6 +188,7 @@ export function ToyCheckApp() {
         imageUrls: [...uploadPreviewUrls],
       });
       setAnalysis(data as AnalysisResult);
+      setResultsSource("analyze");
       setView("results");
     } catch (err) {
       setError(
@@ -192,13 +205,6 @@ export function ToyCheckApp() {
     resetError();
     markVisited();
     setView(path);
-  };
-
-  const handleTryAnother = () => {
-    resetError();
-    setListingContext(null);
-    setAnalysis(null);
-    setView("home");
   };
 
   return (
@@ -248,9 +254,10 @@ export function ToyCheckApp() {
         <ResultsView
           listing={listingContext}
           analysis={analysis}
-          collapseListing={collapseListingByDefault}
+          collapseListing={
+            resultsSource === "demo" ? false : collapseListingByDefault
+          }
           onBack={goHome}
-          onTryAnother={handleTryAnother}
         />
       )}
 
