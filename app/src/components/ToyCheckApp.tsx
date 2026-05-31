@@ -48,7 +48,6 @@ export function ToyCheckApp() {
   const {
     markVisited,
     markResultsViewed,
-    collapseListingByDefault,
   } = useReturningVisitor();
 
   const [view, setView] = useState<View>("home");
@@ -254,9 +253,6 @@ export function ToyCheckApp() {
         <ResultsView
           listing={listingContext}
           analysis={analysis}
-          collapseListing={
-            resultsSource === "demo" ? false : collapseListingByDefault
-          }
           onBack={goHome}
         />
       )}

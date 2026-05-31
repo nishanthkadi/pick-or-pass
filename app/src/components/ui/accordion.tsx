@@ -39,7 +39,7 @@ export function AccordionItem({
       <Accordion.Header>
         <Accordion.Trigger
           className={cn(
-            "flex min-h-11 w-full items-center justify-between gap-4 py-4 text-left",
+            "flex min-h-10 w-full items-center justify-between gap-4 py-3 text-left",
             "text-subsection-title font-semibold text-foreground",
             "hover:text-accent focus-visible:rounded-md",
             "[&[data-state=open]>svg]:rotate-180",

@@ -26,43 +26,81 @@ const GRADE_CONFIG = {
   },
 } as const;
 
-export function VerdictCard({ result }: { result: AnalysisResult }) {
+type VerdictSummaryProps = {
+  result: AnalysisResult;
+  /** Embedded at top of Verdict details card */
+  embedded?: boolean;
+};
+
+export function VerdictSummary({
+  result,
+  embedded = false,
+}: VerdictSummaryProps) {
   const config = GRADE_CONFIG[result.grade];
   const Icon = config.icon;
 
   return (
-    <section
-      className={cn("rounded-2xl border-2 p-6", config.container)}
+    <div
+      className={cn(
+        embedded
+          ? cn("border-b px-4 py-3.5 sm:px-5", config.container)
+          : cn("rounded-2xl border-2 p-6", config.container),
+      )}
       aria-labelledby="verdict-heading"
     >
-      <h2 id="verdict-heading" className="text-eyebrow text-muted">
+      <h2
+        id="verdict-heading"
+        className={cn(
+          embedded ? "sr-only" : "text-eyebrow text-muted",
+        )}
+      >
         Verdict
       </h2>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        <Icon
-          className={cn("h-8 w-8 shrink-0", config.text)}
-          aria-hidden="true"
-        />
-        <span
-          className={cn(
-            "inline-flex min-h-11 items-center rounded-full px-4 py-2 text-base font-bold",
-            config.badge,
-          )}
-        >
-          <span className="sr-only">{config.iconLabel}: </span>
-          {result.grade_label}
-        </span>
-      </div>
-
-      <p
+      <div
         className={cn(
-          "mt-4 text-section-title leading-snug",
-          config.text,
+          "flex items-start gap-2.5",
+          !embedded && "mt-3",
         )}
       >
-        {result.visit_summary}
-      </p>
-    </section>
+        <Icon
+          className={cn(
+            "shrink-0",
+            embedded ? "mt-0.5 h-5 w-5" : "h-8 w-8",
+            config.text,
+          )}
+          aria-hidden="true"
+        />
+        <div className="min-w-0 flex-1">
+          <span
+            className={cn(
+              "inline-flex items-center rounded-full font-bold",
+              config.badge,
+              embedded
+                ? "min-h-8 px-3 py-1 text-sm"
+                : "min-h-11 px-4 py-2 text-base",
+            )}
+          >
+            <span className="sr-only">{config.iconLabel}: </span>
+            {result.grade_label}
+          </span>
+          <p
+            className={cn(
+              "leading-snug",
+              embedded
+                ? "mt-2 text-sm sm:text-base"
+                : "mt-4 text-section-title",
+              config.text,
+            )}
+          >
+            {result.visit_summary}
+          </p>
+        </div>
+      </div>
+    </div>
   );
+}
+
+export function VerdictCard({ result }: { result: AnalysisResult }) {
+  return <VerdictSummary result={result} />;
 }

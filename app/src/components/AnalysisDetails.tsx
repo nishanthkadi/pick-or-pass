@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { VerdictSummary } from "@/components/VerdictCard";
 import type { AnalysisResult } from "@/lib/schema/analysis";
 import { useState } from "react";
 
@@ -27,12 +28,12 @@ export function AnalysisDetails({ result }: { result: AnalysisResult }) {
     <section aria-labelledby="details-heading">
       <SectionHeading
         id="details-heading"
-        eyebrow="Details"
-        title="More about this analysis"
-        description="Expand a section for reasons, seller questions, and limits. Start with the verdict above."
+        title="Verdict details"
+        description="Expand a section for reasons, seller questions, and limits."
       />
 
-      <Card className="mt-4">
+      <Card className="mt-3 overflow-hidden">
+        <VerdictSummary result={result} embedded />
         <CardContent className="px-5 py-0">
           <AccordionRoot defaultValue={[]}>
             <AccordionItem value="why" title="Why this grade">

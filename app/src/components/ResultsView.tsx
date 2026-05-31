@@ -4,20 +4,17 @@ import {
   type ListingContextData,
 } from "@/components/ListingContext";
 import { BackLink } from "@/components/ui/back-link";
-import { VerdictCard } from "@/components/VerdictCard";
 import type { AnalysisResult } from "@/lib/schema/analysis";
 
 type ResultsViewProps = {
   listing: ListingContextData;
   analysis: AnalysisResult;
-  collapseListing?: boolean;
   onBack: () => void;
 };
 
 export function ResultsView({
   listing,
   analysis,
-  collapseListing = false,
   onBack,
 }: ResultsViewProps) {
   return (
@@ -30,12 +27,8 @@ export function ResultsView({
         <BackLink onClick={onBack} />
       </div>
 
-      <div className="space-y-6">
-        <VerdictCard result={analysis} />
-        <ListingContext
-          listing={listing}
-          defaultOpen={!collapseListing}
-        />
+      <div className="space-y-4">
+        <ListingContext listing={listing} defaultOpen={false} />
         <AnalysisDetails result={analysis} />
       </div>
     </section>

@@ -123,12 +123,12 @@ function ListingPhotoCarousel({
 
 export function ListingContext({
   listing,
-  defaultOpen = true,
+  defaultOpen = false,
 }: ListingContextProps) {
   const [open, setOpen] = useState(defaultOpen);
   const title = listing.label
-    ? `${listing.label} — what we analyzed`
-    : "Your listing";
+    ? `${listing.label} details`
+    : "Your listing details";
 
   return (
     <section aria-labelledby="listing-context-heading">
@@ -143,7 +143,6 @@ export function ListingContext({
             >
               <SectionHeading
                 id="listing-context-heading"
-                eyebrow="Listing"
                 title={title}
               />
               <ChevronDown
