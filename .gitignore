@@ -1,0 +1,17 @@
+# App (Next.js)
+app/node_modules/
+app/.next/
+app/out/
+app/build/
+app/.vercel/
+app/.env*
+app/*.tsbuildinfo
+
+# Eval run logs (golden + dataset are committed)
+eval/results/*
+!eval/results/.gitignore
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

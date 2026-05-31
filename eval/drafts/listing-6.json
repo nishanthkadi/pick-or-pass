@@ -1,0 +1,35 @@
+{
+  "id": "listing-6",
+  "description": "Fair condition. Clean.",
+  "image_files": ["listing-6-1.jpg"],
+  "tags": ["avoid", "structural_damage", "text_photo_mismatch", "single_photo", "shopping_cart_toy", "real_seller_photo"],
+  "expected": {
+    "grade": "avoid",
+    "text_photo_alignment": "partially_matches",
+    "visit_summary_must_convey": "Skip this trip — visible structural damage at the base makes it not worth driving for",
+    "must_include_reason_themes": [
+      "visible crack or break in the plastic base or bottom of the cart",
+      "fair condition and clean text does not match the damage shown in the photo",
+      "structural damage likely affects stability and usability for a child",
+      "not worth a trip even if the listing sounds acceptable at first glance",
+      "single photo shows enough to spot a serious condition problem"
+    ],
+    "should_ask_seller": [
+      "what is your address for pickup",
+      "would you consider giving this away for free given the damage",
+      "is pickup only or would you drop off if it is free"
+    ],
+    "must_not_include": [
+      "proximity or meetup location as grading signal",
+      "hype language or urgency pressure",
+      "grading as Good or Not sure despite visible structural damage",
+      "treating fair condition text as reliable without checking the photo"
+    ]
+  },
+  "notes": {
+    "photo_signal": "Real home photo of a pink and purple toy shopping cart on carpet. Teal plastic base has a large white stress mark and vertical crack between the wheels — looks snapped or structurally compromised.",
+    "why_this_grade": "Seller says fair and clean, but the photo shows obvious bottom/base damage that would make the cart unstable. Not worth a trip; at most ask for address or whether they'd give it away free.",
+    "pm_note": "Low-effort text plus visible damage is an Avoid pattern — photo contradicts the condition claim."
+  },
+  "use_as_cached_demo": false
+}

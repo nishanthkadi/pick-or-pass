@@ -1,0 +1,70 @@
+{
+  "grade": "not_sure",
+  "grade_label": "Not sure",
+  "visit_summary": "Don't drive yet — ask the seller about completeness and working lights before committing.",
+  "text_photo_alignment": "partially_matches",
+  "alignment_summary": "The listing mentions working lights, but the photos do not show them illuminated. The animal figures in the photos do not perfectly match the description.",
+  "mismatches": [
+    {
+      "issue": "The description states the playset has working lights, but the photos do not show them illuminated.",
+      "sources": [
+        "text",
+        "photo"
+      ]
+    },
+    {
+      "issue": "The animal figures shown in the photos do not precisely match the list of animals provided in the description.",
+      "sources": [
+        "text",
+        "photo"
+      ]
+    }
+  ],
+  "reasons": [
+    {
+      "text": "Interactive toy farm playset with lights",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "Several animal figures included",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "Lights are mentioned as working",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "Lights are not shown working in photos",
+      "source": "photo",
+      "sentiment": "concern"
+    },
+    {
+      "text": "Inconsistency in animal figures between text and photos",
+      "source": "text_and_photo",
+      "sentiment": "concern"
+    }
+  ],
+  "seller_questions": [
+    "Is this still available?",
+    "Are the lights on the barn working?",
+    "Is this the complete set? Are any animals or accessories missing?",
+    "Are there any cracks, damage, or significant cleanliness issues with the playset or figures?",
+    "What ages is this toy appropriate for?"
+  ],
+  "seller_message_draft": "Hi! Is this still available? Are the lights on the barn working? Is this the complete set, or are any animals or accessories missing? Are there any cracks, damage, or significant cleanliness issues with the playset or figures? What ages is this toy appropriate for?",
+  "limitations": [
+    "Cannot verify if the lights are actually working.",
+    "Cannot confirm the exact completeness of the set beyond what is visible.",
+    "Cannot assess the overall cleanliness or any hidden damage not visible in the photos.",
+    "Cannot determine the toy's history or previous usage conditions."
+  ],
+  "research_recommended": [
+    "Check for any known recalls on this specific toy model.",
+    "Search for images of the complete set to compare against the listing.",
+    "Look for reviews or information about the durability and common issues with this toy."
+  ],
+  "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
+}

@@ -1,0 +1,49 @@
+{
+  "grade": "not_sure",
+  "grade_label": "Not sure",
+  "visit_summary": "Don't drive yet - ask the seller about completeness and condition before committing.",
+  "text_photo_alignment": "partially_matches",
+  "alignment_summary": "The listing mentions extra characters and vehicles, and the photo shows the dollhouse with several figures and accessories. However, it's unclear if all original pieces are present or if the 'extras' are indeed complete.",
+  "mismatches": [],
+  "reasons": [
+    {
+      "text": "Comes with extra characters and vehicles.",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "Dollhouse appears to be in good condition with furniture and accessories.",
+      "source": "photo",
+      "sentiment": "positive"
+    },
+    {
+      "text": "Several Peppa Pig characters and vehicles are visible.",
+      "source": "photo",
+      "sentiment": "positive"
+    },
+    {
+      "text": "The exact completeness of the set and the nature of the 'extra' items are not specified.",
+      "source": "text_and_photo",
+      "sentiment": "concern"
+    }
+  ],
+  "seller_questions": [
+    "Is this still available?",
+    "Is this the complete Peppa Pig dollhouse set, or are there any original pieces missing?",
+    "What are the 'extra characters and vehicles' that come with the set?",
+    "Are there any damages, cracks, or significant wear and tear on the dollhouse or accessories?",
+    "Is the dollhouse clean and ready for play?"
+  ],
+  "seller_message_draft": "Hi! Is this still available? Is this the complete Peppa Pig dollhouse set, or are there any original pieces missing? What are the 'extra characters and vehicles' that come with the set? Are there any damages, cracks, or significant wear and tear on the dollhouse or accessories? Is the dollhouse clean and ready for play?",
+  "limitations": [
+    "Cannot verify the exact number of included accessories or characters.",
+    "Cannot confirm the structural integrity or hidden damage of the toy.",
+    "Cannot assess the cleanliness or any lingering odors from the toy."
+  ],
+  "research_recommended": [
+    "Check for official Peppa Pig dollhouse accessory lists to compare with the photo.",
+    "Search for common issues or recalls related to this specific Peppa Pig dollhouse model.",
+    "Look for reviews or comparisons of this toy to understand its typical features and potential wear points."
+  ],
+  "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
+}

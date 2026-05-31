@@ -1,0 +1,35 @@
+{
+  "id": "listing-5",
+  "description": "Condition: Used - like new. Think we have all pieces - basically brand new, kids never quite took to it.",
+  "image_files": ["listing-5-1.jpg", "listing-5-2.jpg"],
+  "tags": ["good_listing", "text_photo_match", "multi_photo", "workbench_toy", "includes_retail_screenshot", "real_seller_photo"],
+  "expected": {
+    "grade": "good",
+    "text_photo_alignment": "matches",
+    "visit_summary_must_convey": "Worth a trip if you confirm price, completeness, and condition with the seller first",
+    "must_include_reason_themes": [
+      "real home photo matches like new condition described in text",
+      "seller includes amazon or retail screenshot with price and product details",
+      "text and photos align on the same robud workbench product",
+      "listing feels authentic and straightforward from a credible seller",
+      "enough product context to decide trip worthiness despite brief seller text"
+    ],
+    "should_ask_seller": [
+      "will you bargain on price",
+      "why are you selling this",
+      "what age is this toy good for",
+      "do you have a link to the original listing handy"
+    ],
+    "must_not_include": [
+      "proximity or meetup location as grading signal",
+      "hype language or urgency pressure",
+      "grading as Avoid despite strong listing materials"
+    ]
+  },
+  "notes": {
+    "photo_signal": "Photo 1: real home shot of Robud wooden workbench beside bookshelves; looks like-new. Photo 2: Amazon product page screenshot showing $66.99 list price, 4.6 stars, and full product title.",
+    "why_this_grade": "Text-photo match is strong; seller smartly pairs a believable real photo with the original Amazon listing for price and specs. Brief text is offset by retail screenshot — straightforward lister, condition matches visuals. Trip-worthy with standard confirmation questions.",
+    "pm_note": "Brief seller text plus retail screenshot is a positive pattern — distinct from sparse listing with no price or product context."
+  },
+  "use_as_cached_demo": false
+}

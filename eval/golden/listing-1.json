@@ -1,0 +1,54 @@
+{
+  "grade": "good",
+  "grade_label": "Good",
+  "visit_summary": "Worth a trip if you confirm the set is complete and undamaged with the seller.",
+  "text_photo_alignment": "matches",
+  "alignment_summary": "The description accurately details the Peppa Pig cruise ship playset and its accessories, which are all visible in the provided photo. The photo appears to show a complete set with all described components.",
+  "mismatches": [],
+  "reasons": [
+    {
+      "text": "Colorful Peppa Pig cruise ship playset includes three character figures and various beach-themed accessories.",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "Plastic ship has multiple levels, bunk beds, and a fold-out side panel revealing a ball pit scene.",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "Set comes with a slide, lounge chairs, a table, and a pool.",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "All described accessories and figures appear to be present in the photo.",
+      "source": "photo",
+      "sentiment": "positive"
+    },
+    {
+      "text": "The playset appears to be in good condition with no visible damage in the photo.",
+      "source": "photo",
+      "sentiment": "positive"
+    }
+  ],
+  "seller_questions": [
+    "Is this still available?",
+    "Is this the complete set? Anything missing?",
+    "Any damage or cleanliness issues before I drive?",
+    "What ages is this appropriate for?"
+  ],
+  "seller_message_draft": "Hi! Is this still available? Is this the complete set? Anything missing? Any damage or cleanliness issues before I drive? What ages is this appropriate for?",
+  "limitations": [
+    "Cannot confirm the exact number of all small accessories included.",
+    "Cannot verify the working condition of any interactive features (if any).",
+    "Cannot assess the overall cleanliness or any hidden damage.",
+    "Cannot confirm if the item is from a smoke-free or pet-free home."
+  ],
+  "research_recommended": [
+    "Check for any known recalls on this specific Peppa Pig playset.",
+    "Manually count all accessories against a complete set list if possible.",
+    "Verify the seller's profile and reviews for trustworthiness."
+  ],
+  "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
+}

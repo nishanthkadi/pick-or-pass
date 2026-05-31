@@ -1,0 +1,34 @@
+{
+  "id": "listing-4",
+  "description": "Condition: Used - Good. Character: Animal. Interactive toy farm playset has a red barn with working lights. It comes with several animal figures including a chicken, a pink mouse, a sheep, a purple horse, a green cow, and a pink rabbit.",
+  "image_files": ["listing-4-1.jpg", "listing-4-2.jpg", "listing-4-3.jpg"],
+  "tags": ["not_sure", "text_photo_match", "multi_photo", "farm_toy", "interactive_toy", "real_seller_photo"],
+  "expected": {
+    "grade": "not_sure",
+    "text_photo_alignment": "matches",
+    "visit_summary_must_convey": "Promising listing but ask about price, completeness, usage, and whether interactive features work before you drive",
+    "must_include_reason_themes": [
+      "text and photos match with specific animal and color details",
+      "real home photos from multiple angles not stock images",
+      "condition described as used good but limited usage history",
+      "no listed price or original retail context for trip worthiness",
+      "cannot verify interactive features or lights working from photos alone"
+    ],
+    "should_ask_seller": [
+      "how long has this been used",
+      "are there any components that are missing",
+      "what is the interactive part and is everything working as expected"
+    ],
+    "must_not_include": [
+      "proximity or meetup location as grading signal",
+      "grading as Good without price completeness and working features confirmed",
+      "hype language or urgency pressure"
+    ]
+  },
+  "notes": {
+    "photo_signal": "Three real home photos of a red interactive farm barn with silo; animals visible across angles match listed colors and types. Lights not shown on in photos; completeness of all pieces unclear across shots.",
+    "why_this_grade": "Leaning good — strong text-photo match and thoughtful listing effort — but not enough to drive yet: no price, unknown usage length, missing components unconfirmed, and interactive or light features not demonstrated in photos.",
+    "pm_note": "Do not grade on fun or value for money without price. Specific color details may be LLM-assisted seller text; still a positive listing-quality signal."
+  },
+  "use_as_cached_demo": false
+}
