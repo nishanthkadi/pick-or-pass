@@ -19,6 +19,7 @@ Listing text can be gamed; photos anchor trust. ChatGPT makes you re-explain con
 | `assets/` | Listing images for eval |
 | `00_Brief.md` … `04_Build_Notes.md` | PM product docs |
 | `06_Retrospective.md` | Project retrospective |
+| `portfolio/` | Case study, index, screenshots |
 
 ## Run locally
 
@@ -37,9 +38,29 @@ npm run eval                  # live API run
 npm run eval -- --score-only  # score golden outputs only
 ```
 
-## Portfolio
+## Screenshots
 
-Case study and screenshots: `../../05_Portfolio/Pick_or_Pass_Case_Study.md`
+### Home page
+
+![Home page](./portfolio/assets/pick-or-pass/home-page.png)
+
+### Sample listings
+
+![Sample listings picker](./docs/screenshots/sample-listings.png)
+
+### Avoid verdict
+
+![Why this grade — Avoid](./portfolio/assets/pick-or-pass/why-this-grade-avoid.png)
+
+### Good verdict
+
+![Why this grade — Good](./docs/screenshots/why-this-grade-good.png)
+
+### Questions to ask the seller
+
+![Questions to ask the seller](./portfolio/assets/pick-or-pass/questions-to-ask-seller.png)
+
+**Case study:** [portfolio/Pick_or_Pass_Case_Study.md](./portfolio/Pick_or_Pass_Case_Study.md)
 
 ## Stack
 

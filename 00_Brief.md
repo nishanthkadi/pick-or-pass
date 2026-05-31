@@ -42,4 +42,4 @@ Shows pain-first product thinking, honest AI scoping (what we cannot know), mult
 ## Current Stage
 
 - **Shipped v1** — https://pick-or-pass-seven.vercel.app/
-- Portfolio case study: `05_Portfolio/Pick_or_Pass_Case_Study.md`
+- Portfolio case study: `portfolio/Pick_or_Pass_Case_Study.md`

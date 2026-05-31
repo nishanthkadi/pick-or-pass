@@ -216,7 +216,7 @@ assets/             ← images referenced by dataset
 1. Deploy Next.js app.
 2. Set env vars in Vercel dashboard.
 3. Capture screenshots for `assets/`.
-4. Draft case study in `05_Portfolio/`.
+4. Draft case study in `portfolio/`.
 5. Write retrospective in `06_Retrospective.md`.
 
 **Learn:** Production env management, cold start / latency, API cost per analysis.
@@ -273,7 +273,7 @@ Deploy (Phase 5)
 
 - **Live URL:** https://pick-or-pass-seven.vercel.app/
 - **GitHub:** https://github.com/nishanthkadi/pick-or-pass
-- **Portfolio:** `05_Portfolio/Pick_or_Pass_Case_Study.md` + screenshots in `05_Portfolio/Assets/Pick or Pass/`
+- **Portfolio:** `portfolio/Pick_or_Pass_Case_Study.md` + screenshots in `portfolio/assets/pick-or-pass/`
 - **Portfolio index** updated; project `README.md` + `06_Retrospective.md` written
 - **UI polish post-deploy:** sample tile spoilers removed, verdict/details unified, listing collapsed by default, photo carousel
 
