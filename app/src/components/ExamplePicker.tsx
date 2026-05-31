@@ -29,7 +29,6 @@ export function ExamplePicker({
 
       <SectionHeading
         id="examples-heading"
-        eyebrow="Samples"
         title="Sample listings"
         description="Pick a listing to see what Pick or Pass would say — verdict revealed after you open it."
       />
