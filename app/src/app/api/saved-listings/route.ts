@@ -71,9 +71,10 @@ function getListingLabel(payload: {
   listingText?: string;
   listingLabel?: string;
 }) {
+  const maxLabelLength = 48;
   const providedLabel = payload.listingLabel?.trim();
   if (providedLabel) {
-    return providedLabel;
+    return shortenLabel(providedLabel, maxLabelLength);
   }
 
   const fieldLabels = new Set([
@@ -97,17 +98,66 @@ function getListingLabel(payload: {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean);
-  const candidate =
+
+  const brandIndex = lines.findIndex((line) => line.toLowerCase() === "brand");
+  const brand =
+    brandIndex >= 0 && lines[brandIndex + 1]
+      ? cleanLabelText(lines[brandIndex + 1])
+      : undefined;
+  const titleIndex = lines.findIndex((line) => line.toLowerCase() === "title");
+  const title =
+    titleIndex >= 0 && lines[titleIndex + 1]
+      ? cleanLabelText(lines[titleIndex + 1])
+      : undefined;
+
+  const productLine =
+    title ??
     lines.find((line) => {
       const normalized = line.toLowerCase();
       return (
-        line.length >= 18 &&
+        line.length >= 12 &&
         !fieldLabels.has(normalized) &&
-        !conditionValues.has(normalized)
+        !conditionValues.has(normalized) &&
+        normalized !== brand?.toLowerCase()
       );
-    }) ?? lines.find((line) => line.length >= 8);
+    }) ??
+    lines.find((line) => line.length >= 8);
 
-  return candidate ? candidate.slice(0, 120) : undefined;
+  const cleanedProductLine = productLine ? cleanLabelText(productLine) : "";
+  const candidate =
+    brand &&
+    cleanedProductLine &&
+    !cleanedProductLine.toLowerCase().startsWith(brand.toLowerCase())
+      ? `${brand} ${cleanedProductLine}`
+      : cleanedProductLine || brand;
+
+  return candidate ? shortenLabel(candidate, maxLabelLength) : undefined;
+}
+
+function cleanLabelText(value: string) {
+  return value
+    .replace(
+      /\b(in\s+)?(new|used|good|great|excellent|fair|poor|like new)\s+condition\b/gi,
+      "",
+    )
+    .replace(/\bcondition\s*[:\-]?\s*/gi, "")
+    .replace(/\bused\s*[-]\s*(good|fair|poor|like new)\b/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function shortenLabel(value: string, maxLength: number) {
+  const cleaned = cleanLabelText(value)
+    .replace(/\bcaring for animals\b/gi, "")
+    .replace(/\belectronic\b$/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (cleaned.length <= maxLength) {
+    return cleaned;
+  }
+
+  const shortened = cleaned.slice(0, maxLength + 1).replace(/\s+\S*$/, "");
+  return shortened || cleaned.slice(0, maxLength);
 }
 
 export async function GET(req: Request) {
