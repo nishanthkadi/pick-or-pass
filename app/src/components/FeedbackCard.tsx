@@ -150,11 +150,15 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
           improvementUse: true,
         }));
 
+      if (!linkedListingId) {
+        throw new Error("Could not link feedback to this listing.");
+      }
+
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          savedListingId: linkedListingId ?? undefined,
+          savedListingId: linkedListingId,
           ownerToken,
           helpfulness: value,
           issueTags: value === "not_helpful" ? issueTags : [],
@@ -265,7 +269,7 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
                 type="button"
                 title="This was useful"
                 aria-label="This was useful"
-                disabled={submitting || submitted}
+                disabled={submitting}
                 onClick={() => void submitFeedback("helpful")}
                 className={feedbackButtonClass(helpfulness === "helpful")}
               >
@@ -275,8 +279,12 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
                 type="button"
                 title="This was not useful"
                 aria-label="This was not useful"
-                disabled={submitting || submitted}
-                onClick={() => setHelpfulness("not_helpful")}
+                disabled={submitting}
+                onClick={() => {
+                  setHelpfulness("not_helpful");
+                  setSubmitted(false);
+                  setError(null);
+                }}
                 className={feedbackButtonClass(helpfulness === "not_helpful")}
               >
                 <ThumbsDown className="h-5 w-5" aria-hidden="true" />
@@ -284,7 +292,7 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
             </div>
           </div>
 
-          {helpfulness === "not_helpful" && !submitted && (
+          {helpfulness === "not_helpful" && (
             <div className="mt-4 space-y-4">
               <fieldset>
                 <legend className="text-sm font-medium text-foreground">
@@ -345,14 +353,18 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
                   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
                 )}
               >
-                {submitting ? "Sending..." : "Send feedback"}
+                {submitting
+                  ? "Saving..."
+                  : submitted
+                    ? "Update feedback"
+                    : "Send feedback"}
               </button>
             </div>
           )}
 
           {submitted && (
             <p className="mt-3 text-sm font-medium text-foreground">
-              Thanks — feedback shared.
+              Feedback saved. You can change it anytime.
             </p>
           )}
 

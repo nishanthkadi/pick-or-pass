@@ -12,7 +12,7 @@ export const feedbackIssueTagSchema = z.enum([
 ]);
 
 export const feedbackRequestSchema = z.object({
-  savedListingId: z.string().uuid().optional(),
+  savedListingId: z.string().uuid(),
   ownerToken: z.string().trim().min(8).max(120),
   helpfulness: z.enum(["helpful", "not_helpful"]),
   gradeAccuracy: z

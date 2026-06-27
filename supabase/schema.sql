@@ -73,11 +73,18 @@ create table if not exists public.listing_feedback (
   issue_tags text[] not null default '{}',
   comment text,
   metadata jsonb not null,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
+
+alter table public.listing_feedback
+  add column if not exists updated_at timestamptz not null default now();
 
 create index if not exists listing_feedback_saved_listing_idx
   on public.listing_feedback (saved_listing_id, created_at desc);
+
+create unique index if not exists listing_feedback_saved_listing_owner_unique
+  on public.listing_feedback (saved_listing_id, owner_token);
 
 create index if not exists listing_feedback_owner_created_idx
   on public.listing_feedback (owner_token, created_at desc);

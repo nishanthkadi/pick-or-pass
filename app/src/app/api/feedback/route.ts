@@ -43,26 +43,35 @@ export async function POST(req: Request) {
   try {
     const feedback = feedbackRequestSchema.parse(body);
     const supabase = getSupabaseAdminClient();
+    const createdAt = new Date().toISOString();
+
+    const { data, error } = await supabase
+      .from("listing_feedback")
+      .upsert(
+        {
+          saved_listing_id: feedback.savedListingId,
+          owner_token: feedback.ownerToken,
+          helpfulness: feedback.helpfulness,
+          grade_accuracy: feedback.gradeAccuracy,
+          issue_tags: feedback.issueTags,
+          comment: feedback.comment,
+          metadata: feedback.metadata,
+          updated_at: createdAt,
+        },
+        { onConflict: "saved_listing_id,owner_token" },
+      )
+      .select("id")
+      .single();
+
+    if (error || !data?.id) {
+      throw new Error(error?.message || "Could not record feedback.");
+    }
+
     const record: FeedbackRecord = {
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
+      id: data.id as string,
+      createdAt,
       feedback,
     };
-
-    const { error } = await supabase.from("listing_feedback").insert({
-      id: record.id,
-      saved_listing_id: feedback.savedListingId,
-      owner_token: feedback.ownerToken,
-      helpfulness: feedback.helpfulness,
-      grade_accuracy: feedback.gradeAccuracy,
-      issue_tags: feedback.issueTags,
-      comment: feedback.comment,
-      metadata: feedback.metadata,
-    });
-
-    if (error) {
-      throw new Error(error.message);
-    }
 
     await recordFeedback(record, process.env.NODE_ENV !== "production");
 
