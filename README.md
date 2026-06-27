@@ -47,7 +47,7 @@ Pick or Pass encodes parent + Marketplace + toy context once, requires both text
 - **Next.js app** on Vercel (`app/`) — landing, 6 sample demos, live analyze API
 - **Eval infrastructure** — `eval/dataset.jsonl` (6 real listings), golden outputs, rubric scorer, `--score-only` / `--no-sync` CLI
 - **Prompt iteration** — 6/6 grade match after tuning for visible damage, incomplete sets, and missing-price cases
-- **Saved listings + feedback loop** — users can save listing text/photos/verdicts, revisit saved listings on the same browser, share feedback, and optionally allow saved listings into the reviewed improvement queue
+- **Saved listings + feedback loop** — users can save listing text/photos/verdicts for themselves, revisit saved listings on the same browser, and share feedback that stores the case for reviewed improvement
 
 ## Metrics & evaluation
 
@@ -88,7 +88,7 @@ Built a labeled eval set before prompt tweaking (not after vibes):
 - **Eval cases should come from real listings first** — synthetic examples missed patterns like promo-photo mismatch and "fair/clean" text with visible cracks
 - **Models hedge to Not sure** unless prompts explicitly forbid downgrading Avoid when damage is visible in photos
 - **Cached demos are a product feature** — portfolio visitors and sample flow don't burn API quota
-- **Raw feedback is not training truth** — feedback is stored as signal, while saved listing photos/text require explicit improvement consent before review
+- **Raw feedback is not training truth** — feedback stores the case for review, but reviewed cases still need human labeling before eval or prompt changes
 - **Deployment is part of the product** — env vars, rate limits, and public URL change how you think about abuse and cost
 
 ## What's next

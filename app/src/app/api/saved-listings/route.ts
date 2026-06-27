@@ -67,6 +67,7 @@ export async function GET(req: Request) {
         ].join(","),
       )
       .eq("owner_token", ownerToken)
+      .eq("user_saved", true)
       .order("created_at", { ascending: false })
       .limit(20);
 
@@ -169,6 +170,7 @@ export async function POST(req: Request) {
         analysis_result: payload.analysis,
         grade: payload.analysis.grade,
         text_photo_alignment: payload.analysis.text_photo_alignment,
+        user_saved: payload.userSaved,
         allow_improvement_use: payload.allowImprovementUse,
         review_status: reviewStatus,
       })

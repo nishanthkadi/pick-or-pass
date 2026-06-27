@@ -2,7 +2,7 @@
 
 ## v1.6 Goal
 
-Turn Pick or Pass from a static demo into a learning AI product: let users save listings and verdicts, collect feedback, review consented failure cases, promote good examples into evals, then improve prompts or schema with regression checks.
+Turn Pick or Pass from a static demo into a learning AI product: let users save listings and verdicts, collect feedback with photos for review, promote good examples into evals, then improve prompts or schema with regression checks.
 
 ## Why Feedback Does Not Auto-Train The Model
 
@@ -11,9 +11,9 @@ App feedback is useful signal, not automatic truth. A user may mark an answer as
 The right loop is:
 
 ```text
-Saved listing + feedback
-  -> consented review queue
-  -> human-labeled eval candidate with photos when allowed
+Saved listing or feedback
+  -> review queue
+  -> human-labeled eval candidate
   -> eval dataset update
   -> prompt/schema/model change
   -> regression run
@@ -26,9 +26,9 @@ Saved listing + feedback
 - Supabase Postgres tables for saved listings, photo metadata, feedback, and review decisions
 - Supabase Storage bucket for uploaded listing photos
 - Same-browser Saved Listings view using anonymous `owner_token`
-- Result-page **Share feedback** workflow: Helpful / Not helpful, grade outcome, failure tags, optional note
-- Feedback is saved for product improvement by default
-- Saved listing text/photos/verdicts are only eligible for improvement review when the user opts in
+- Result-page **Share feedback** workflow: thumbs up/down, with "What felt off?" shown only for thumbs down
+- Feedback saves the listing case and photos for product improvement review by default
+- Manual saved listings default to "Improve app" opt-in but can be unchecked
 - Anonymous `owner_token` in localStorage ties same-browser saves and feedback without accounts
 
 ## Next Product Moves

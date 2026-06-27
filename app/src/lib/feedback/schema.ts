@@ -15,7 +15,9 @@ export const feedbackRequestSchema = z.object({
   savedListingId: z.string().uuid().optional(),
   ownerToken: z.string().trim().min(8).max(120),
   helpfulness: z.enum(["helpful", "not_helpful"]),
-  gradeAccuracy: z.enum(["right", "wrong", "not_sure", "not_contacted"]),
+  gradeAccuracy: z
+    .enum(["right", "wrong", "not_sure", "not_contacted"])
+    .default("not_contacted"),
   issueTags: z.array(feedbackIssueTagSchema).max(5).default([]),
   comment: z.string().trim().max(700).optional(),
   metadata: z.object({

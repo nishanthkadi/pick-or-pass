@@ -21,6 +21,7 @@ create table if not exists public.saved_listings (
       'insufficient_text'
     )
   ),
+  user_saved boolean not null default true,
   allow_improvement_use boolean not null default false,
   review_status text not null default 'not_shared' check (
     review_status in (
@@ -36,6 +37,15 @@ create table if not exists public.saved_listings (
 
 create index if not exists saved_listings_owner_created_idx
   on public.saved_listings (owner_token, created_at desc);
+
+alter table public.saved_listings
+  add column if not exists listing_image_urls jsonb not null default '[]'::jsonb;
+
+alter table public.saved_listings
+  add column if not exists user_saved boolean not null default true;
+
+create index if not exists saved_listings_owner_saved_created_idx
+  on public.saved_listings (owner_token, user_saved, created_at desc);
 
 create index if not exists saved_listings_review_status_idx
   on public.saved_listings (review_status, created_at desc);
@@ -84,3 +94,8 @@ create table if not exists public.improvement_reviews (
 
 create index if not exists improvement_reviews_listing_idx
   on public.improvement_reviews (saved_listing_id, created_at desc);
+
+alter table public.saved_listings enable row level security;
+alter table public.saved_listing_photos enable row level security;
+alter table public.listing_feedback enable row level security;
+alter table public.improvement_reviews enable row level security;

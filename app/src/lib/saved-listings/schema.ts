@@ -18,6 +18,7 @@ export const savedListingPayloadSchema = z.object({
   listingLabel: z.string().trim().max(120).optional(),
   listingImageUrls: z.array(z.string().trim().max(500)).max(10).default([]),
   analysis: analysisSchema,
+  userSaved: z.boolean().default(true),
   allowImprovementUse: z.boolean().default(false),
 });
 

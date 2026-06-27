@@ -1,16 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { FeedbackIssueTag } from "@/lib/feedback/schema";
 import { useOwnerToken } from "@/lib/saved-listings/owner-token";
 import type { SavedListingSource } from "@/lib/saved-listings/schema";
 import type { AnalysisResult } from "@/lib/schema/analysis";
 import { cn } from "@/lib/utils";
+import { Bookmark, Check, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useId, useState } from "react";
 
 type Helpfulness = "helpful" | "not_helpful";
-type GradeAccuracy = "right" | "wrong" | "not_sure" | "not_contacted";
 
 export type FeedbackContext = {
   source: SavedListingSource;
@@ -38,13 +37,6 @@ const issueOptions: Array<{ value: FeedbackIssueTag; label: string }> = [
   { value: "other", label: "Other" },
 ];
 
-const accuracyOptions: Array<{ value: GradeAccuracy; label: string }> = [
-  { value: "not_contacted", label: "I have not contacted or visited yet" },
-  { value: "right", label: "The grade seems right" },
-  { value: "wrong", label: "The grade seems wrong" },
-  { value: "not_sure", label: "I am not sure yet" },
-];
-
 async function getApiError(res: Response, fallback: string) {
   try {
     const data = (await res.json()) as { error?: unknown };
@@ -55,18 +47,17 @@ async function getApiError(res: Response, fallback: string) {
 }
 
 export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
-  const commentId = useId();
-  const improvementConsentId = useId();
+  const noteId = useId();
+  const improveId = useId();
   const ownerToken = useOwnerToken();
   const [savedListingId, setSavedListingId] = useState<string | null>(
     context.savedListingId ?? null,
   );
-  const [allowImprovementUse, setAllowImprovementUse] = useState(false);
+  const [userSaved, setUserSaved] = useState(Boolean(context.savedListingId));
+  const [allowImprovementUse, setAllowImprovementUse] = useState(true);
   const [savingListing, setSavingListing] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [helpfulness, setHelpfulness] = useState<Helpfulness | null>(null);
-  const [gradeAccuracy, setGradeAccuracy] =
-    useState<GradeAccuracy>("not_contacted");
   const [issueTags, setIssueTags] = useState<FeedbackIssueTag[]>([]);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -81,8 +72,16 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
     );
   };
 
-  const saveListing = async () => {
-    if (savingListing || savedListingId) return;
+  const saveListing = async ({
+    saveForUser,
+    improvementUse,
+  }: {
+    saveForUser: boolean;
+    improvementUse: boolean;
+  }) => {
+    if (savingListing || (savedListingId && saveForUser && userSaved)) {
+      return savedListingId;
+    }
 
     setSavingListing(true);
     setSaveError(null);
@@ -98,7 +97,8 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
           listingLabel: context.listingLabel,
           listingImageUrls: context.source === "demo" ? context.imageUrls : [],
           analysis,
-          allowImprovementUse,
+          userSaved: saveForUser,
+          allowImprovementUse: improvementUse,
         }),
       );
 
@@ -123,32 +123,45 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
       }
 
       setSavedListingId(data.savedListingId);
+      setUserSaved(saveForUser);
+      return data.savedListingId;
     } catch (err) {
-      setSaveError(
-        err instanceof Error ? err.message : "Could not save this listing.",
-      );
+      const message =
+        err instanceof Error ? err.message : "Could not save this listing.";
+      setSaveError(message);
+      throw new Error(message);
     } finally {
       setSavingListing(false);
     }
   };
 
-  const submitFeedback = async () => {
-    if (!helpfulness || submitting) return;
+  const submitFeedback = async (value: Helpfulness) => {
+    if (submitting) return;
 
     setSubmitting(true);
     setError(null);
+    setHelpfulness(value);
 
     try {
+      const linkedListingId =
+        savedListingId ??
+        (await saveListing({
+          saveForUser: false,
+          improvementUse: true,
+        }));
+
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          savedListingId: savedListingId ?? undefined,
+          savedListingId: linkedListingId ?? undefined,
           ownerToken,
-          helpfulness,
-          gradeAccuracy,
-          issueTags,
-          comment: comment.trim() || undefined,
+          helpfulness: value,
+          issueTags: value === "not_helpful" ? issueTags : [],
+          comment:
+            value === "not_helpful" && comment.trim()
+              ? comment.trim()
+              : undefined,
           metadata: {
             source: context.source,
             listingLabel: context.listingLabel,
@@ -180,132 +193,101 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
     }
   };
 
+  const saveTitle =
+    "Keep the listing photos, text, and verdict so you can revisit it later.";
+
   return (
     <Card>
-      <CardContent className="space-y-7">
-        <section aria-labelledby="save-listing-heading">
-          <h2 id="save-listing-heading" className="text-section-title text-foreground">
-            Save this listing and verdict
-          </h2>
-          <p className="mt-2 text-base text-muted">
-            Keep the listing photos, text, and verdict so you can revisit it
-            later.
-          </p>
-          {context.source === "demo" && (
-            <p className="mt-2 text-sm text-muted">
-              Sample listings save the verdict and listing text; their photos
-              stay as public demo assets.
-            </p>
-          )}
+      <CardContent className="flex flex-col gap-5 p-4 sm:p-5">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              title={saveTitle}
+              aria-label="Save this listing and verdict"
+              disabled={savingListing || userSaved}
+              onClick={() =>
+                void saveListing({
+                  saveForUser: true,
+                  improvementUse: allowImprovementUse,
+                })
+              }
+              className={cn(
+                "inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors",
+                "hover:border-accent hover:bg-accent-soft",
+                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+                "disabled:cursor-not-allowed disabled:opacity-70",
+              )}
+            >
+              {userSaved ? (
+                <Check className="h-5 w-5" aria-hidden="true" />
+              ) : (
+                <Bookmark className="h-5 w-5" aria-hidden="true" />
+              )}
+            </button>
+            <span className="text-sm font-medium text-foreground">
+              {userSaved ? "Saved" : "Save listing"}
+            </span>
+          </div>
 
           <label
-            htmlFor={improvementConsentId}
-            className="mt-4 flex items-start gap-2 text-sm leading-relaxed text-muted"
+            htmlFor={improveId}
+            className="flex items-center gap-2 text-sm text-muted"
+            title="Allow this saved listing to help improve Pick or Pass after review."
           >
             <input
-              id={improvementConsentId}
+              id={improveId}
               type="checkbox"
               checked={allowImprovementUse}
               onChange={(event) =>
                 setAllowImprovementUse(event.target.checked)
               }
-              disabled={Boolean(savedListingId) || savingListing}
-              className="mt-1 h-4 w-4 accent-foreground"
+              disabled={savingListing || userSaved}
+              className="h-4 w-4 accent-foreground"
             />
-            Also allow this saved listing to help improve Pick or Pass after
-            review.
+            Improve app
           </label>
+        </div>
 
-          {savedListingId ? (
-            <p className="mt-4 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground">
-              Saved. Feedback you share below will be tied to this listing.
-            </p>
-          ) : (
-            <Button
-              type="button"
-              className="mt-5 w-full sm:w-auto"
-              disabled={savingListing}
-              onClick={() => void saveListing()}
-            >
-              {savingListing ? "Saving listing..." : "Save listing and verdict"}
-            </Button>
-          )}
-
-          {saveError && (
-            <p className="mt-3 text-sm font-medium text-grade-avoid-text">
-              {saveError}
-            </p>
-          )}
-        </section>
-
-        <section
-          aria-labelledby="share-feedback-heading"
-          className="border-t border-border pt-6"
-        >
-          <h2
-            id="share-feedback-heading"
-            className="text-section-title text-foreground"
-          >
-            Share feedback
-          </h2>
-        <p className="mt-2 text-base text-muted">
-            Tell us what worked or felt off. Feedback helps improve future
-            verdicts.
+        {saveError && (
+          <p className="text-sm font-medium text-grade-avoid-text">
+            {saveError}
           </p>
+        )}
 
-          {submitted ? (
-            <p className="mt-4 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground">
-              Thanks. Your feedback is saved for product improvement and review.
+        <div className="border-t border-border pt-4">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-sm font-medium text-foreground">
+              Was this useful?
             </p>
-          ) : (
-            <>
-              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                <Button
-                  type="button"
-                  variant={helpfulness === "helpful" ? "primary" : "secondary"}
-                  onClick={() => setHelpfulness("helpful")}
-                  className="flex-1"
-                >
-                  Helpful
-                </Button>
-                <Button
-                  type="button"
-                  variant={
-                    helpfulness === "not_helpful" ? "primary" : "secondary"
-                  }
-                  onClick={() => setHelpfulness("not_helpful")}
-                  className="flex-1"
-                >
-                  Not helpful
-                </Button>
-              </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                title="This was useful"
+                aria-label="This was useful"
+                disabled={submitting || submitted}
+                onClick={() => void submitFeedback("helpful")}
+                className={feedbackButtonClass(helpfulness === "helpful")}
+              >
+                <ThumbsUp className="h-5 w-5" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                title="This was not useful"
+                aria-label="This was not useful"
+                disabled={submitting || submitted}
+                onClick={() => setHelpfulness("not_helpful")}
+                className={feedbackButtonClass(helpfulness === "not_helpful")}
+              >
+                <ThumbsDown className="h-5 w-5" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
 
-              <fieldset className="mt-5">
-                <legend className="text-subsection-title text-foreground">
-                  Was the grade right?
-                </legend>
-                <div className="mt-2 space-y-2">
-                  {accuracyOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex items-center gap-2 text-sm text-muted"
-                    >
-                      <input
-                        type="radio"
-                        name="grade-accuracy"
-                        value={option.value}
-                        checked={gradeAccuracy === option.value}
-                        onChange={() => setGradeAccuracy(option.value)}
-                        className="h-4 w-4 accent-foreground"
-                      />
-                      {option.label}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-
-              <fieldset className="mt-5">
-                <legend className="text-subsection-title text-foreground">
+          {helpfulness === "not_helpful" && !submitted && (
+            <div className="mt-4 space-y-4">
+              <fieldset>
+                <legend className="text-sm font-medium text-foreground">
                   What felt off?
                 </legend>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -331,20 +313,20 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
                 </div>
               </fieldset>
 
-              <div className="mt-5">
+              <div>
                 <label
-                  htmlFor={commentId}
-                  className="text-subsection-title text-foreground"
+                  htmlFor={noteId}
+                  className="text-sm font-medium text-foreground"
                 >
                   Optional note
                 </label>
                 <textarea
-                  id={commentId}
+                  id={noteId}
                   rows={3}
                   value={comment}
                   onChange={(event) => setComment(event.target.value)}
                   maxLength={700}
-                  placeholder="What did the model miss, overstate, or make easier?"
+                  placeholder="What did the model miss or overstate?"
                   className={cn(
                     "mt-2 w-full rounded-xl border-2 border-border bg-surface px-4 py-3 text-base text-foreground",
                     "placeholder:text-muted-subtle",
@@ -353,30 +335,44 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
                 />
               </div>
 
-              <p className="mt-3 text-sm leading-relaxed text-muted">
-                We save your feedback, verdict, and listing text for product
-                improvement. Photos are only saved if you choose to save the
-                listing above.
-              </p>
-
-              {error && (
-                <p className="mt-3 text-sm font-medium text-grade-avoid-text">
-                  {error}
-                </p>
-              )}
-
-              <Button
+              <button
                 type="button"
-                className="mt-5 w-full sm:w-auto"
-                disabled={!helpfulness || submitting}
-                onClick={() => void submitFeedback()}
+                disabled={submitting}
+                onClick={() => void submitFeedback("not_helpful")}
+                className={cn(
+                  "inline-flex min-h-11 items-center justify-center rounded-xl bg-foreground px-5 py-2.5 text-base font-semibold text-background transition-colors",
+                  "hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40",
+                  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+                )}
               >
-                {submitting ? "Saving feedback..." : "Submit feedback"}
-              </Button>
-            </>
+                {submitting ? "Sending..." : "Send feedback"}
+              </button>
+            </div>
           )}
-        </section>
+
+          {submitted && (
+            <p className="mt-3 text-sm font-medium text-foreground">
+              Thanks — feedback shared.
+            </p>
+          )}
+
+          {error && (
+            <p className="mt-3 text-sm font-medium text-grade-avoid-text">
+              {error}
+            </p>
+          )}
+        </div>
       </CardContent>
     </Card>
+  );
+}
+
+function feedbackButtonClass(selected: boolean) {
+  return cn(
+    "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-colors",
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+    selected
+      ? "border-foreground bg-foreground text-background"
+      : "border-border bg-background text-muted hover:border-accent hover:text-foreground",
   );
 }

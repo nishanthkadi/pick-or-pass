@@ -42,5 +42,5 @@ Shows pain-first product thinking, honest AI scoping (what we cannot know), mult
 ## Current Stage
 
 - **Shipped v1.6** — https://pick-or-pass-seven.vercel.app/
-- Added saved listings, uploaded photo storage, and feedback tied to reviewed improvement consent
+- Added saved listings, uploaded photo storage, and feedback cases for reviewed improvement
 - Portfolio write-up: root `README.md`
