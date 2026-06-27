@@ -19,7 +19,7 @@ export function PathSelector({ onSelect }: PathSelectorProps) {
         prominent
       />
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <PathCard
           onClick={() => onSelect("examples")}
           eyebrow="See how it works"
@@ -34,13 +34,20 @@ export function PathSelector({ onSelect }: PathSelectorProps) {
           description="Paste text and upload a photo from a listing you're considering."
           cta="Analyze my listing"
         />
-        <PathCard
+      </div>
+
+      <div className="mt-4 text-center">
+        <button
+          type="button"
           onClick={() => onSelect("saved")}
-          eyebrow="Come back later"
-          title="Saved listings"
-          description="Revisit listings and verdicts saved on this browser."
-          cta="View saved listings"
-        />
+          className={cn(
+            "inline-flex min-h-11 items-center justify-center rounded-xl px-3 text-sm font-semibold text-accent",
+            "hover:bg-accent-soft hover:text-accent-hover hover:underline",
+            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+          )}
+        >
+          Already saved a listing? View saved listings
+        </button>
       </div>
     </section>
   );
