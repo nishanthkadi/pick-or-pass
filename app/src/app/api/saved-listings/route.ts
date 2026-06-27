@@ -75,8 +75,9 @@ export async function GET(req: Request) {
     }
 
     const bucket = getSavedListingPhotoBucket();
+    const rows = (data ?? []) as unknown as SavedListingRow[];
     const listings = await Promise.all(
-      ((data ?? []) as SavedListingRow[]).map(async (row) => {
+      rows.map(async (row) => {
         const signedUrls = await Promise.all(
           (row.saved_listing_photos ?? []).map(async (photo) => {
             const { data: signed } = await supabase.storage
