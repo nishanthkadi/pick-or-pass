@@ -35,8 +35,8 @@ export function ResultsView({
 
       <div className="space-y-4">
         <ListingContext listing={listing} defaultOpen={false} />
-        <AnalysisDetails result={analysis} />
         <FeedbackCard analysis={analysis} context={feedbackContext} />
+        <AnalysisDetails result={analysis} />
       </div>
     </section>
   );
