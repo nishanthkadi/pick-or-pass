@@ -7,6 +7,7 @@ create extension if not exists "pgcrypto";
 create table if not exists public.saved_listings (
   id uuid primary key default gen_random_uuid(),
   owner_token text not null,
+  result_key text not null default '',
   source text not null check (source in ('demo', 'analyze')),
   listing_text text,
   listing_label text,
@@ -37,6 +38,13 @@ create table if not exists public.saved_listings (
 
 create index if not exists saved_listings_owner_created_idx
   on public.saved_listings (owner_token, created_at desc);
+
+alter table public.saved_listings
+  add column if not exists result_key text not null default '';
+
+create unique index if not exists saved_listings_owner_result_key_unique
+  on public.saved_listings (owner_token, result_key)
+  where result_key <> '';
 
 alter table public.saved_listings
   add column if not exists listing_image_urls jsonb not null default '[]'::jsonb;

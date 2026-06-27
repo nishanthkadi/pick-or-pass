@@ -20,6 +20,7 @@ type SavedListingPhotoRow = {
 
 type SavedListingRow = {
   id: string;
+  result_key: string;
   source: "demo" | "analyze";
   listing_text: string | null;
   listing_label: string | null;
@@ -53,6 +54,7 @@ export async function GET(req: Request) {
       .select(
         [
           "id",
+          "result_key",
           "source",
           "listing_text",
           "listing_label",
@@ -158,23 +160,51 @@ export async function POST(req: Request) {
     const improvementReviewStatus: ImprovementReviewStatus =
       payload.allowImprovementUse ? "unreviewed" : "not_shared";
 
-    const { data: listing, error: listingError } = await supabase
+    const { data: existingListing, error: existingError } = await supabase
       .from("saved_listings")
-      .insert({
-        owner_token: payload.ownerToken,
-        source: payload.source,
-        listing_text: payload.listingText,
-        listing_label: payload.listingLabel,
-        listing_image_urls: payload.source === "demo" ? payload.listingImageUrls : [],
-        analysis_result: payload.analysis,
-        grade: payload.analysis.grade,
-        text_photo_alignment: payload.analysis.text_photo_alignment,
-        user_saved: payload.userSaved,
-        allow_improvement_use: payload.allowImprovementUse,
-        improvement_review_status: improvementReviewStatus,
-      })
-      .select("id")
-      .single();
+      .select("id,user_saved")
+      .eq("owner_token", payload.ownerToken)
+      .eq("result_key", payload.resultKey)
+      .maybeSingle();
+
+    if (existingError) {
+      throw new Error(existingError.message);
+    }
+
+    const listingMutation = existingListing?.id
+      ? supabase
+          .from("saved_listings")
+          .update({
+            user_saved: Boolean(
+              existingListing.user_saved || payload.userSaved,
+            ),
+            allow_improvement_use: payload.allowImprovementUse,
+            improvement_review_status: improvementReviewStatus,
+          })
+          .eq("id", existingListing.id)
+          .select("id")
+          .single()
+      : supabase
+          .from("saved_listings")
+          .insert({
+            owner_token: payload.ownerToken,
+            result_key: payload.resultKey,
+            source: payload.source,
+            listing_text: payload.listingText,
+            listing_label: payload.listingLabel,
+            listing_image_urls:
+              payload.source === "demo" ? payload.listingImageUrls : [],
+            analysis_result: payload.analysis,
+            grade: payload.analysis.grade,
+            text_photo_alignment: payload.analysis.text_photo_alignment,
+            user_saved: payload.userSaved,
+            allow_improvement_use: payload.allowImprovementUse,
+            improvement_review_status: improvementReviewStatus,
+          })
+          .select("id")
+          .single();
+
+    const { data: listing, error: listingError } = await listingMutation;
 
     if (listingError || !listing?.id) {
       throw new Error(listingError?.message || "Could not save listing.");
@@ -183,7 +213,7 @@ export async function POST(req: Request) {
     const bucket = getSavedListingPhotoBucket();
     const photoRows = [];
 
-    for (const photo of photos) {
+    for (const photo of existingListing?.id ? [] : photos) {
       const extensionName = safeFileName(photo.name || "listing-photo");
       const storagePath = [
         payload.ownerToken,
