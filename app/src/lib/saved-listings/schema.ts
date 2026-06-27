@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const savedListingSourceSchema = z.enum(["demo", "analyze"]);
 
-export const reviewStatusSchema = z.enum([
+export const improvementReviewStatusSchema = z.enum([
   "not_shared",
   "unreviewed",
   "eval_candidate",
@@ -24,4 +24,6 @@ export const savedListingPayloadSchema = z.object({
 
 export type SavedListingPayload = z.infer<typeof savedListingPayloadSchema>;
 export type SavedListingSource = z.infer<typeof savedListingSourceSchema>;
-export type ReviewStatus = z.infer<typeof reviewStatusSchema>;
+export type ImprovementReviewStatus = z.infer<
+  typeof improvementReviewStatusSchema
+>;

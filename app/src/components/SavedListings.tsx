@@ -17,7 +17,7 @@ export type SavedListingSummary = {
   imageUrls: string[];
   analysis: AnalysisResult;
   grade: AnalysisResult["grade"];
-  reviewStatus: string;
+  improvementReviewStatus: string;
   createdAt: string;
 };
 

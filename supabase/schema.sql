@@ -23,8 +23,8 @@ create table if not exists public.saved_listings (
   ),
   user_saved boolean not null default true,
   allow_improvement_use boolean not null default false,
-  review_status text not null default 'not_shared' check (
-    review_status in (
+  improvement_review_status text not null default 'not_shared' check (
+    improvement_review_status in (
       'not_shared',
       'unreviewed',
       'eval_candidate',
@@ -47,8 +47,20 @@ alter table public.saved_listings
 create index if not exists saved_listings_owner_saved_created_idx
   on public.saved_listings (owner_token, user_saved, created_at desc);
 
-create index if not exists saved_listings_review_status_idx
-  on public.saved_listings (review_status, created_at desc);
+alter table public.saved_listings
+  add column if not exists improvement_review_status text not null default 'not_shared'
+  check (
+    improvement_review_status in (
+      'not_shared',
+      'unreviewed',
+      'eval_candidate',
+      'added_to_eval',
+      'rejected'
+    )
+  );
+
+create index if not exists saved_listings_improvement_review_status_idx
+  on public.saved_listings (improvement_review_status, created_at desc);
 
 create table if not exists public.saved_listing_photos (
   id uuid primary key default gen_random_uuid(),

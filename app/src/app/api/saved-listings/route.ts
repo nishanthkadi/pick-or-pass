@@ -1,6 +1,6 @@
 import {
   savedListingPayloadSchema,
-  type ReviewStatus,
+  type ImprovementReviewStatus,
 } from "@/lib/saved-listings/schema";
 import {
   getSavedListingPhotoBucket,
@@ -28,7 +28,7 @@ type SavedListingRow = {
   grade: string;
   text_photo_alignment: string;
   allow_improvement_use: boolean;
-  review_status: string;
+  improvement_review_status: string;
   created_at: string;
   saved_listing_photos?: SavedListingPhotoRow[];
 };
@@ -61,7 +61,7 @@ export async function GET(req: Request) {
           "grade",
           "text_photo_alignment",
           "allow_improvement_use",
-          "review_status",
+          "improvement_review_status",
           "created_at",
           "saved_listing_photos(storage_path)",
         ].join(","),
@@ -100,7 +100,7 @@ export async function GET(req: Request) {
           grade: row.grade,
           textPhotoAlignment: row.text_photo_alignment,
           allowImprovementUse: row.allow_improvement_use,
-          reviewStatus: row.review_status,
+          improvementReviewStatus: row.improvement_review_status,
           createdAt: row.created_at,
         };
       }),
@@ -155,9 +155,8 @@ export async function POST(req: Request) {
       .filter((item): item is File => item instanceof File)
       .slice(0, MAX_PHOTOS);
     const supabase = getSupabaseAdminClient();
-    const reviewStatus: ReviewStatus = payload.allowImprovementUse
-      ? "unreviewed"
-      : "not_shared";
+    const improvementReviewStatus: ImprovementReviewStatus =
+      payload.allowImprovementUse ? "unreviewed" : "not_shared";
 
     const { data: listing, error: listingError } = await supabase
       .from("saved_listings")
@@ -172,7 +171,7 @@ export async function POST(req: Request) {
         text_photo_alignment: payload.analysis.text_photo_alignment,
         user_saved: payload.userSaved,
         allow_improvement_use: payload.allowImprovementUse,
-        review_status: reviewStatus,
+        improvement_review_status: improvementReviewStatus,
       })
       .select("id")
       .single();
@@ -225,7 +224,7 @@ export async function POST(req: Request) {
       ok: true,
       savedListingId: listing.id,
       photoCount: photoRows.length,
-      reviewStatus,
+      improvementReviewStatus,
     });
   } catch (err) {
     if (err instanceof SupabaseNotConfiguredError) {
