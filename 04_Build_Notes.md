@@ -265,6 +265,16 @@ Deploy (Phase 5)
 
 ## Implementation log
 
+### 2026-06-26 — v1.6 saved listings + feedback
+
+- **Product lesson:** saving is personal utility; feedback is product signal; saved listing photos/text require explicit improvement consent before review
+- **UI:** result-page workflow now has **Save this listing and verdict** plus **Share feedback** with "What felt off?" tags
+- **Storage:** added Supabase Postgres schema for saved listings, photo metadata, feedback, and improvement reviews
+- **API:** added `/api/saved-listings` for listing/photo/verdict saves and updated `/api/feedback` to persist feedback tied to saved listings
+- **Privacy:** live analysis still does not persist by default; photos are only stored when the user chooses to save the listing
+- **Docs:** updated `07_Product_Evolution.md`, README, app README, and env example for Supabase setup
+- **Next:** saved-listings page, review workflow, eval expansion from 6 to ~20 cases
+
 ### Backlog — eval / UI
 
 - **listing-3 UI demo:** Promoted — see manifest + `public/listings/` (eval pass confirmed)

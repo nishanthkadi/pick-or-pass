@@ -1,5 +1,9 @@
 import { AnalysisDetails } from "@/components/AnalysisDetails";
 import {
+  FeedbackCard,
+  type FeedbackContext,
+} from "@/components/FeedbackCard";
+import {
   ListingContext,
   type ListingContextData,
 } from "@/components/ListingContext";
@@ -9,12 +13,14 @@ import type { AnalysisResult } from "@/lib/schema/analysis";
 type ResultsViewProps = {
   listing: ListingContextData;
   analysis: AnalysisResult;
+  feedbackContext: FeedbackContext;
   onBack: () => void;
 };
 
 export function ResultsView({
   listing,
   analysis,
+  feedbackContext,
   onBack,
 }: ResultsViewProps) {
   return (
@@ -30,6 +36,7 @@ export function ResultsView({
       <div className="space-y-4">
         <ListingContext listing={listing} defaultOpen={false} />
         <AnalysisDetails result={analysis} />
+        <FeedbackCard analysis={analysis} context={feedbackContext} />
       </div>
     </section>
   );

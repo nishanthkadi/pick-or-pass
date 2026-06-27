@@ -10,6 +10,8 @@ app/*.tsbuildinfo
 # Eval run logs (golden + dataset are committed)
 eval/results/*
 !eval/results/.gitignore
+eval/feedback/*
+!eval/feedback/.gitignore
 
 # OS / editor
 .DS_Store

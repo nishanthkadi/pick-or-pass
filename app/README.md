@@ -39,6 +39,8 @@ Open [http://localhost:3000](http://localhost:3000).
 | `public/listings/` | Sample listing images |
 | `src/app/api/analyze/` | Live analysis + BYOK |
 | `src/app/api/demo/[id]/` | Cached demo API |
+| `src/app/api/saved-listings/` | Save listing text/photos/verdicts |
+| `src/app/api/feedback/` | Store feedback tied to saved listings when available |
 
 PM docs live in the parent folder: `../`
 
@@ -49,13 +51,18 @@ PM docs live in the parent folder: `../`
 3. **Environment variables** (Production + Preview):
    - `GEMINI_API_KEY` — from [Google AI Studio](https://aistudio.google.com/apikey)
    - `GEMINI_MODEL` — optional, defaults to `gemini-2.5-flash-lite`
+   - `SUPABASE_URL` — required for saved listings/photos/feedback
+   - `SUPABASE_SERVICE_ROLE_KEY` — server-only key for inserts and photo uploads
+   - `SUPABASE_SAVED_LISTINGS_BUCKET` — optional, defaults to `saved-listing-photos`
 4. Deploy. Smoke-test:
    - Home → Sample listings → open Listing 1–6 (no API key needed)
    - Analyze your own listing (uses server key + rate limits)
+   - Save a listing and submit feedback after Supabase is configured
 5. **Rate limits:** In-memory on Hobby tier (resets on cold start). BYOK path lets users bring their own key after free checks.
 
 ## Stack
 
 - Next.js (App Router) + TypeScript + Tailwind
 - Gemini API (multimodal)
+- Supabase Postgres + Storage (saved listings, photos, feedback)
 - Vercel (deploy)

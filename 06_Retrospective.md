@@ -13,6 +13,7 @@ A deployed web app that helps parents decide whether a Facebook Marketplace used
 - Models default to **Not sure** when they see problems but aren't told to commit to **Avoid** for visible damage
 - `--score-only` eval runs save API quota during rubric work
 - Temperature 0.2 + explicit calibration examples improve consistency more than longer prose
+- Raw app feedback is signal, not automatic training truth — review it before promoting cases into evals
 
 ## What I Learned About The User
 
@@ -45,6 +46,7 @@ A deployed web app that helps parents decide whether a Facebook Marketplace used
 ## What I Would Improve
 
 - Upstash rate limits for production
+- Saved-listings page plus a small review workflow
 - CI gate on grade match across eval set
 - Short Loom demo for portfolio
 - Rename screenshot asset "Details about the analysis" to match "Verdict details" UI label
@@ -55,4 +57,4 @@ This project shows I can scope an AI product to a real user pain, build eval inf
 
 ## Next Capability To Learn
 
-Automated eval in CI, observability (log failures by case tag), or a v2 research layer with explicit tool boundaries.
+Feedback-to-eval review workflows, automated eval in CI, observability (log failures by case tag), or a v2 research layer with explicit tool boundaries.

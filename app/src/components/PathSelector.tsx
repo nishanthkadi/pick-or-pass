@@ -2,7 +2,7 @@ import { SectionDivider } from "@/components/ui/section-divider";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 
-export type AppPath = "examples" | "analyze";
+export type AppPath = "examples" | "analyze" | "saved";
 
 type PathSelectorProps = {
   onSelect: (path: AppPath) => void;
@@ -19,7 +19,7 @@ export function PathSelector({ onSelect }: PathSelectorProps) {
         prominent
       />
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
         <PathCard
           onClick={() => onSelect("examples")}
           eyebrow="See how it works"
@@ -33,6 +33,13 @@ export function PathSelector({ onSelect }: PathSelectorProps) {
           title="Check your listing"
           description="Paste text and upload a photo from a listing you're considering."
           cta="Analyze my listing"
+        />
+        <PathCard
+          onClick={() => onSelect("saved")}
+          eyebrow="Come back later"
+          title="Saved listings"
+          description="Revisit listings and verdicts saved on this browser."
+          cta="View saved listings"
         />
       </div>
     </section>

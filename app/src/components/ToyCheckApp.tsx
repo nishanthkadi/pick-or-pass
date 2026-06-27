@@ -6,14 +6,19 @@ import { LandingHero } from "@/components/LandingHero";
 import type { ListingContextData } from "@/components/ListingContext";
 import { PathSelector, type AppPath } from "@/components/PathSelector";
 import { ResultsView } from "@/components/ResultsView";
+import {
+  SavedListings,
+  type SavedListingSummary,
+} from "@/components/SavedListings";
 import { Alert } from "@/components/ui/alert";
 import type { DemoListing } from "@/lib/demos/getDemo";
+import { useOwnerToken } from "@/lib/saved-listings/owner-token";
 import type { AnalysisResult } from "@/lib/schema/analysis";
 import { useReturningVisitor } from "@/lib/use-returning-visitor";
 import manifest from "@/data/demos/manifest.json";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-type View = "home" | "examples" | "analyze" | "results";
+type View = "home" | "examples" | "analyze" | "saved" | "results";
 type ResultsSource = "demo" | "analyze";
 
 type DemoApiResponse = {
@@ -49,6 +54,7 @@ export function ToyCheckApp() {
     markVisited,
     markResultsViewed,
   } = useReturningVisitor();
+  const ownerToken = useOwnerToken();
 
   const [view, setView] = useState<View>("home");
   const [listingText, setListingText] = useState("");
@@ -65,6 +71,7 @@ export function ToyCheckApp() {
   const [resultsSource, setResultsSource] = useState<ResultsSource | null>(
     null,
   );
+  const [savedListingId, setSavedListingId] = useState<string | null>(null);
 
   const uploadPreviewUrls = useMemo(
     () => images.map((file) => URL.createObjectURL(file)),
@@ -107,6 +114,7 @@ export function ToyCheckApp() {
   const goHome = () => {
     resetError();
     setResultsSource(null);
+    setSavedListingId(null);
     setView("home");
     setShowByok(false);
   };
@@ -132,6 +140,7 @@ export function ToyCheckApp() {
       });
       setAnalysis(demo.analysis);
       setResultsSource("demo");
+      setSavedListingId(null);
       setView("results");
     } catch (err) {
       setError(
@@ -188,6 +197,7 @@ export function ToyCheckApp() {
       });
       setAnalysis(data as AnalysisResult);
       setResultsSource("analyze");
+      setSavedListingId(null);
       setView("results");
     } catch (err) {
       setError(
@@ -204,6 +214,19 @@ export function ToyCheckApp() {
     resetError();
     markVisited();
     setView(path);
+  };
+
+  const openSavedListing = (saved: SavedListingSummary) => {
+    resetError();
+    setListingContext({
+      label: saved.listingLabel,
+      description: saved.listingText,
+      imageUrls: saved.imageUrls,
+    });
+    setAnalysis(saved.analysis);
+    setResultsSource(saved.source);
+    setSavedListingId(saved.id);
+    setView("results");
   };
 
   return (
@@ -249,10 +272,27 @@ export function ToyCheckApp() {
         />
       )}
 
-      {view === "results" && listingContext && analysis && (
+      {view === "saved" && (
+        <SavedListings
+          ownerToken={ownerToken}
+          onSelect={openSavedListing}
+          onBack={goHome}
+        />
+      )}
+
+      {view === "results" && listingContext && analysis && resultsSource && (
         <ResultsView
           listing={listingContext}
           analysis={analysis}
+          feedbackContext={{
+            source: resultsSource,
+            listingLabel: listingContext.label,
+            listingDescription: listingContext.description,
+            imageUrls: listingContext.imageUrls,
+            imageCount: listingContext.imageUrls.length,
+            imageFiles: resultsSource === "analyze" ? images : undefined,
+            savedListingId: savedListingId ?? undefined,
+          }}
           onBack={goHome}
         />
       )}

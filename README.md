@@ -47,6 +47,7 @@ Pick or Pass encodes parent + Marketplace + toy context once, requires both text
 - **Next.js app** on Vercel (`app/`) — landing, 6 sample demos, live analyze API
 - **Eval infrastructure** — `eval/dataset.jsonl` (6 real listings), golden outputs, rubric scorer, `--score-only` / `--no-sync` CLI
 - **Prompt iteration** — 6/6 grade match after tuning for visible damage, incomplete sets, and missing-price cases
+- **Saved listings + feedback loop** — users can save listing text/photos/verdicts, revisit saved listings on the same browser, share feedback, and optionally allow saved listings into the reviewed improvement queue
 
 ## Metrics & evaluation
 
@@ -87,14 +88,16 @@ Built a labeled eval set before prompt tweaking (not after vibes):
 - **Eval cases should come from real listings first** — synthetic examples missed patterns like promo-photo mismatch and "fair/clean" text with visible cracks
 - **Models hedge to Not sure** unless prompts explicitly forbid downgrading Avoid when damage is visible in photos
 - **Cached demos are a product feature** — portfolio visitors and sample flow don't burn API quota
+- **Raw feedback is not training truth** — feedback is stored as signal, while saved listing photos/text require explicit improvement consent before review
 - **Deployment is part of the product** — env vars, rate limits, and public URL change how you think about abuse and cost
 
 ## What's next
 
-1. Persistent rate limiting (Upstash) for production scale
+1. Build a small review workflow to promote consented saved listings into eval cases
 2. Expand eval set + wire rubric pass rate into CI
-3. v2: listing URL paste, optional recall/price research (RAG or tools)
-4. Chrome extension only after paste workflow is validated
+3. Add uncertainty UX: evidence source, unknowns, and what would change the grade
+4. v2: listing URL paste, optional recall/price research (RAG or tools)
+5. Chrome extension only after paste workflow is validated
 
 ## Run locally
 
@@ -104,6 +107,12 @@ npm install
 cp .env.example .env.local   # add GEMINI_API_KEY
 npm run dev
 ```
+
+Saved listings and feedback persistence also require Supabase:
+
+1. Run `supabase/schema.sql` in the Supabase SQL editor.
+2. Create a private Storage bucket named `saved-listing-photos`.
+3. Add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and optionally `SUPABASE_SAVED_LISTINGS_BUCKET` to `app/.env.local` and Vercel.
 
 ## Eval
 
@@ -122,8 +131,10 @@ npm run eval -- --score-only  # score golden outputs only
 | `assets/` | Listing images for eval |
 | `00_Brief.md` … `04_Build_Notes.md` | PM product docs |
 | `06_Retrospective.md` | Project retrospective |
+| `07_Product_Evolution.md` | saved-listing and feedback-to-eval roadmap |
 | `portfolio/` | Screenshots, portfolio index, case study template |
+| `supabase/schema.sql` | saved listings, photos, feedback, and review tables |
 
 ## Stack
 
-Next.js · TypeScript · Tailwind · Gemini API · Vercel
+Next.js · TypeScript · Tailwind · Gemini API · Supabase · Vercel
