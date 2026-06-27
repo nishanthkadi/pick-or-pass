@@ -67,6 +67,49 @@ function getResultKey(payload: {
   return `${payload.source}-${hash.toString(36).padStart(6, "0")}`;
 }
 
+function getListingLabel(payload: {
+  listingText?: string;
+  listingLabel?: string;
+}) {
+  const providedLabel = payload.listingLabel?.trim();
+  if (providedLabel) {
+    return providedLabel;
+  }
+
+  const fieldLabels = new Set([
+    "brand",
+    "category",
+    "condition",
+    "description",
+    "location",
+    "price",
+    "title",
+  ]);
+  const conditionValues = new Set([
+    "new",
+    "used",
+    "used - fair",
+    "used - good",
+    "used - like new",
+    "used - poor",
+  ]);
+  const lines = (payload.listingText ?? "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const candidate =
+    lines.find((line) => {
+      const normalized = line.toLowerCase();
+      return (
+        line.length >= 18 &&
+        !fieldLabels.has(normalized) &&
+        !conditionValues.has(normalized)
+      );
+    }) ?? lines.find((line) => line.length >= 8);
+
+  return candidate ? candidate.slice(0, 120) : undefined;
+}
+
 export async function GET(req: Request) {
   try {
     const ownerToken = new URL(req.url).searchParams.get("ownerToken")?.trim();
@@ -189,10 +232,11 @@ export async function POST(req: Request) {
     const improvementReviewStatus: ImprovementReviewStatus =
       payload.allowImprovementUse ? "unreviewed" : "not_shared";
     const resultKey = getResultKey(payload);
+    const listingLabel = getListingLabel(payload);
 
     const { data: existingListing, error: existingError } = await supabase
       .from("saved_listings")
-      .select("id,user_saved")
+      .select("id,user_saved,listing_label")
       .eq("owner_token", payload.ownerToken)
       .eq("result_key", resultKey)
       .maybeSingle();
@@ -210,6 +254,7 @@ export async function POST(req: Request) {
             ),
             allow_improvement_use: payload.allowImprovementUse,
             improvement_review_status: improvementReviewStatus,
+            listing_label: existingListing.listing_label || listingLabel,
           })
           .eq("id", existingListing.id)
           .select("id")
@@ -221,7 +266,7 @@ export async function POST(req: Request) {
             result_key: resultKey,
             source: payload.source,
             listing_text: payload.listingText,
-            listing_label: payload.listingLabel,
+            listing_label: listingLabel,
             listing_image_urls:
               payload.source === "demo" ? payload.listingImageUrls : [],
             analysis_result: payload.analysis,
