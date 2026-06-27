@@ -13,7 +13,7 @@ export const improvementReviewStatusSchema = z.enum([
 
 export const savedListingPayloadSchema = z.object({
   ownerToken: z.string().trim().min(8).max(120),
-  resultKey: z.string().trim().min(8).max(500),
+  resultKey: z.string().trim().max(500).optional(),
   source: savedListingSourceSchema,
   listingText: z.string().trim().max(4000).optional(),
   listingLabel: z.string().trim().max(120).optional(),

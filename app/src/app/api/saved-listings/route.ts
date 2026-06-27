@@ -38,6 +38,35 @@ function safeFileName(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9._-]+/g, "-").slice(0, 80);
 }
 
+function getResultKey(payload: {
+  source: string;
+  listingText?: string;
+  listingLabel?: string;
+  listingImageUrls: string[];
+  analysis: {
+    grade: string;
+    text_photo_alignment: string;
+    visit_summary: string;
+  };
+}) {
+  const raw = [
+    payload.source,
+    payload.listingLabel ?? "",
+    payload.listingText ?? "",
+    payload.listingImageUrls.join("|"),
+    payload.analysis.grade,
+    payload.analysis.text_photo_alignment,
+    payload.analysis.visit_summary,
+  ].join("::");
+
+  let hash = 0;
+  for (let i = 0; i < raw.length; i += 1) {
+    hash = (hash * 31 + raw.charCodeAt(i)) >>> 0;
+  }
+
+  return `${payload.source}-${hash.toString(36).padStart(6, "0")}`;
+}
+
 export async function GET(req: Request) {
   try {
     const ownerToken = new URL(req.url).searchParams.get("ownerToken")?.trim();
@@ -159,12 +188,13 @@ export async function POST(req: Request) {
     const supabase = getSupabaseAdminClient();
     const improvementReviewStatus: ImprovementReviewStatus =
       payload.allowImprovementUse ? "unreviewed" : "not_shared";
+    const resultKey = getResultKey(payload);
 
     const { data: existingListing, error: existingError } = await supabase
       .from("saved_listings")
       .select("id,user_saved")
       .eq("owner_token", payload.ownerToken)
-      .eq("result_key", payload.resultKey)
+      .eq("result_key", resultKey)
       .maybeSingle();
 
     if (existingError) {
@@ -188,7 +218,7 @@ export async function POST(req: Request) {
           .from("saved_listings")
           .insert({
             owner_token: payload.ownerToken,
-            result_key: payload.resultKey,
+            result_key: resultKey,
             source: payload.source,
             listing_text: payload.listingText,
             listing_label: payload.listingLabel,

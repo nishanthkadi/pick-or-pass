@@ -46,25 +46,6 @@ async function getApiError(res: Response, fallback: string) {
   }
 }
 
-function getResultKey(context: FeedbackContext, analysis: AnalysisResult) {
-  const raw = [
-    context.source,
-    context.listingLabel ?? "",
-    context.listingDescription ?? "",
-    context.imageUrls.join("|"),
-    analysis.grade,
-    analysis.text_photo_alignment,
-    analysis.visit_summary,
-  ].join("::");
-
-  let hash = 0;
-  for (let i = 0; i < raw.length; i += 1) {
-    hash = (hash * 31 + raw.charCodeAt(i)) >>> 0;
-  }
-
-  return `${context.source}-${hash.toString(36)}`;
-}
-
 export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
   const noteId = useId();
   const improveId = useId();
@@ -82,7 +63,6 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const resultKey = getResultKey(context, analysis);
 
   const toggleIssue = (tag: FeedbackIssueTag) => {
     setIssueTags((current) =>
@@ -133,7 +113,6 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
         "payload",
         JSON.stringify({
           ownerToken,
-          resultKey,
           source: context.source,
           listingText: context.listingDescription,
           listingLabel: context.listingLabel,
