@@ -87,6 +87,27 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
     setSaveError(null);
 
     try {
+      if (savedListingId && saveForUser && !userSaved) {
+        const res = await fetch("/api/saved-listings", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            savedListingId,
+            ownerToken,
+            allowImprovementUse: improvementUse,
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error(
+            await getApiError(res, "Could not save this listing."),
+          );
+        }
+
+        setUserSaved(true);
+        return savedListingId;
+      }
+
       const formData = new FormData();
       formData.append(
         "payload",

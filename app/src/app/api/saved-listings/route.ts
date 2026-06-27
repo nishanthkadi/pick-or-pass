@@ -253,3 +253,88 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export async function PATCH(req: Request) {
+  let body: unknown;
+
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Update request must be valid JSON.", code: "BAD_REQUEST" },
+      { status: 400 },
+    );
+  }
+
+  if (!body || typeof body !== "object") {
+    return NextResponse.json(
+      { error: "Missing saved listing update payload.", code: "BAD_REQUEST" },
+      { status: 400 },
+    );
+  }
+
+  const {
+    savedListingId,
+    ownerToken,
+    allowImprovementUse,
+  } = body as {
+    savedListingId?: unknown;
+    ownerToken?: unknown;
+    allowImprovementUse?: unknown;
+  };
+
+  if (
+    typeof savedListingId !== "string" ||
+    typeof ownerToken !== "string" ||
+    typeof allowImprovementUse !== "boolean"
+  ) {
+    return NextResponse.json(
+      { error: "Saved listing update payload is invalid.", code: "BAD_REQUEST" },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const supabase = getSupabaseAdminClient();
+    const improvementReviewStatus: ImprovementReviewStatus =
+      allowImprovementUse ? "unreviewed" : "not_shared";
+
+    const { error } = await supabase
+      .from("saved_listings")
+      .update({
+        user_saved: true,
+        allow_improvement_use: allowImprovementUse,
+        improvement_review_status: improvementReviewStatus,
+      })
+      .eq("id", savedListingId)
+      .eq("owner_token", ownerToken);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return NextResponse.json({
+      ok: true,
+      savedListingId,
+      improvementReviewStatus,
+    });
+  } catch (err) {
+    if (err instanceof SupabaseNotConfiguredError) {
+      return NextResponse.json(
+        {
+          error:
+            "Saved listings need Supabase env vars before they can be updated.",
+          code: "STORAGE_NOT_CONFIGURED",
+        },
+        { status: 503 },
+      );
+    }
+
+    const message =
+      err instanceof Error ? err.message : "Could not update saved listing.";
+    return NextResponse.json(
+      { error: message, code: "UPDATE_SAVED_LISTING_FAILED" },
+      { status: 500 },
+    );
+  }
+}
