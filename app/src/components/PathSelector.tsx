@@ -41,12 +41,12 @@ export function PathSelector({ onSelect }: PathSelectorProps) {
           type="button"
           onClick={() => onSelect("saved")}
           className={cn(
-            "inline-flex min-h-11 items-center justify-center rounded-xl px-3 text-sm font-semibold text-accent",
-            "hover:bg-accent-soft hover:text-accent-hover hover:underline",
+            "inline-flex min-h-11 items-center justify-center rounded-xl px-3 text-sm font-medium text-muted underline underline-offset-4",
+            "hover:text-foreground",
             "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
           )}
         >
-          Already saved a listing? View saved listings
+          Saved listings
         </button>
       </div>
     </section>
