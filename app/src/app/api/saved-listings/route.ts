@@ -278,6 +278,18 @@ export async function POST(req: Request) {
       if (photosError) {
         throw new Error(photosError.message);
       }
+
+      const photoReferences = photoRows.map(
+        (photo) => `storage://${bucket}/${photo.storage_path}`,
+      );
+      const { error: photoReferencesError } = await supabase
+        .from("saved_listings")
+        .update({ listing_image_urls: photoReferences })
+        .eq("id", listing.id);
+
+      if (photoReferencesError) {
+        throw new Error(photoReferencesError.message);
+      }
     }
 
     return NextResponse.json({
