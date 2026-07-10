@@ -188,3 +188,26 @@ body {
   text-transform: uppercase;
   color: var(--muted);
 }
+
+/* Paste-from-Marketplace guide: selection highlight pulse */
+.paste-guide-highlight {
+  background-color: color-mix(in srgb, var(--facebook) 22%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--facebook) 35%, transparent);
+  animation: paste-guide-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes paste-guide-pulse {
+  0%,
+  100% {
+    background-color: color-mix(in srgb, var(--facebook) 18%, transparent);
+  }
+  50% {
+    background-color: color-mix(in srgb, var(--facebook) 32%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paste-guide-highlight {
+    animation: none;
+  }
+}

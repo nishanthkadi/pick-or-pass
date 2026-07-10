@@ -1,5 +1,6 @@
 "use client";
 
+import { PasteListingGuide } from "@/components/PasteListingGuide";
 import { RateLimitPanel } from "@/components/RateLimitPanel";
 import { BackLink } from "@/components/ui/back-link";
 import { Button } from "@/components/ui/button";
@@ -110,6 +111,7 @@ export function AnalyzeForm({
             On Facebook Marketplace, select all listing text and paste it here —
             title, price, condition, seller name, and location.
           </p>
+          <PasteListingGuide />
           <textarea
             id="listing-text"
             rows={8}
@@ -118,7 +120,7 @@ export function AnalyzeForm({
             onChange={(e) => onListingTextChange(e.target.value)}
             placeholder={`Example paste:\nToddler Montessori Toy\n$3\nListed a week ago in San Jose, CA\nCondition\nUsed - Good\nStacking shape, and different color\nSeller information\nMah San\nHighly rated on Marketplace`}
             className={cn(
-              "mt-2 w-full rounded-xl border-2 border-border bg-surface px-4 py-3 text-base text-foreground",
+              "mt-3 w-full rounded-xl border-2 border-border bg-surface px-4 py-3 text-base text-foreground",
               "placeholder:text-muted-subtle",
               "focus:border-accent focus:outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-1",
             )}
