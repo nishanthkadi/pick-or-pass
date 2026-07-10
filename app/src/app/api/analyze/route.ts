@@ -1,6 +1,7 @@
 import { apiError, RATE_LIMIT_MESSAGE } from "@/lib/api/errors";
 import { parseAnalyzeRequest } from "@/lib/api/parseAnalyzeRequest";
 import { analyzeListing } from "@/lib/gemini/analyze";
+import { buildAnalysisListingTextFromParts } from "@/lib/listing/buildAnalysisListingText";
 import {
   checkRateLimit,
   getClientIp,
@@ -11,11 +12,13 @@ import { ZodError } from "zod";
 
 export async function POST(req: Request) {
   let listingText: string;
+  let sellerStarRating: number | undefined;
   let images: Awaited<ReturnType<typeof parseAnalyzeRequest>>["images"];
   let apiKey: string | undefined;
 
   try {
-    ({ listingText, images, apiKey } = await parseAnalyzeRequest(req));
+    ({ listingText, sellerStarRating, images, apiKey } =
+      await parseAnalyzeRequest(req));
   } catch (err) {
     const message = err instanceof Error ? err.message : "Invalid request.";
     return apiError(400, "BAD_REQUEST", message);
@@ -55,8 +58,12 @@ export async function POST(req: Request) {
   }
 
   try {
+    const composedListingText = buildAnalysisListingTextFromParts(listingText, {
+      seller_star_rating: sellerStarRating,
+    });
+
     const result = await analyzeListing({
-      listingText,
+      listingText: composedListingText,
       images,
       apiKey,
     });

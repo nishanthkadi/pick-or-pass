@@ -319,6 +319,17 @@ Deploy (Phase 5)
 
 ## Implementation log
 
+### 2026-07-10 — v1.9 eval expansion + eval loop
+
+- **Eval dataset:** expanded from 6 → **10 cases** (`listing-7-wooden-toy`, `listing-8-dino-toy`, `listing-9-car-toy`, `listing-10-simple-toy`)
+- **Schema:** `normalizeAnalysisPayload` in `analysis.ts` — defaults missing `research_recommended` and `future_capability_note` before Zod parse
+- **API:** `generateWithRetry` in `analyze.ts` — backoff on 503/429
+- **Prompt:** v1.9 pattern rules in `system.ts` — stock/retail screenshots, chipped wooden-toy paint, simple-toy sparse-text Good exception, interactive power unknown → Not sure, decision-order checklist
+- **Baseline (score-only, 7 goldens):** **7/7 grade match**, 0/7 full rubric pass
+- **Live eval on new cases:** `listing-8` grade ✓; `listing-7`, `listing-9`, `listing-10` grade ✗ (prompt iteration in progress; API quota hit before re-verify)
+- **Docs:** `Eval_Seed_Examples.md` examples 7–10; `07_Product_Evolution.md` v1.9 slice
+- **Next:** re-run full `npm run eval` when quota resets; deploy prompt if ≥ 9/10 grade match
+
 ### 2026-06-26 — v1.6 saved listings + feedback
 
 - **Product lesson:** saving is personal utility; feedback is product signal and should capture the case/photos for review
@@ -327,7 +338,7 @@ Deploy (Phase 5)
 - **API:** added `/api/saved-listings` for listing/photo/verdict saves and updated `/api/feedback` to persist feedback tied to saved listings
 - **Privacy:** live analysis still does not persist by default; photos are stored when the user saves the listing or shares feedback
 - **Docs:** updated `07_Product_Evolution.md`, README, app README, and env example for Supabase setup
-- **Next:** saved-listings page, review workflow, eval expansion from 6 to ~20 cases
+- **Next:** re-run eval on cases 7–10 when API quota resets; expand toward ~20 cases after grade match holds
 
 ### Backlog — eval / UI
 

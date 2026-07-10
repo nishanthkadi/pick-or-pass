@@ -3,68 +3,54 @@
   "grade_label": "Not sure",
   "visit_summary": "Don't drive yet — ask the seller about completeness and working lights before committing.",
   "text_photo_alignment": "partially_matches",
-  "alignment_summary": "The listing mentions working lights, but the photos do not show them illuminated. The animal figures in the photos do not perfectly match the description.",
-  "mismatches": [
-    {
-      "issue": "The description states the playset has working lights, but the photos do not show them illuminated.",
-      "sources": [
-        "text",
-        "photo"
-      ]
-    },
-    {
-      "issue": "The animal figures shown in the photos do not precisely match the list of animals provided in the description.",
-      "sources": [
-        "text",
-        "photo"
-      ]
-    }
-  ],
+  "alignment_summary": "The listing mentions working lights and specific animals, but the photos do not confirm the lights are working and some animals listed are not clearly visible or present in the photos.",
+  "mismatches": [],
   "reasons": [
     {
-      "text": "Interactive toy farm playset with lights",
+      "text": "Interactive toy farm playset has a red barn with working lights.",
       "source": "text",
-      "sentiment": "positive"
+      "sentiment": "neutral"
     },
     {
-      "text": "Several animal figures included",
+      "text": "It comes with several animal figures including a chicken, a pink mouse, a sheep, a purple horse, a green cow, and a pink rabbit.",
       "source": "text",
-      "sentiment": "positive"
+      "sentiment": "neutral"
     },
     {
-      "text": "Lights are mentioned as working",
-      "source": "text",
-      "sentiment": "positive"
+      "text": "The photos show the farm playset with some animal figures.",
+      "source": "photo",
+      "sentiment": "neutral"
     },
     {
-      "text": "Lights are not shown working in photos",
+      "text": "The lights on the barn are not shown to be working in the photos.",
       "source": "photo",
       "sentiment": "concern"
     },
     {
-      "text": "Inconsistency in animal figures between text and photos",
+      "text": "Not all animals mentioned in the text (e.g., pink mouse, green cow, pink rabbit) are clearly identifiable or present in the photos.",
       "source": "text_and_photo",
       "sentiment": "concern"
     }
   ],
   "seller_questions": [
     "Is this still available?",
+    "Is this the complete set? Are all the animals mentioned included?",
     "Are the lights on the barn working?",
-    "Is this the complete set? Are any animals or accessories missing?",
-    "Are there any cracks, damage, or significant cleanliness issues with the playset or figures?",
-    "What ages is this toy appropriate for?"
+    "Are there any damages or cleanliness issues I should be aware of before visiting?"
   ],
-  "seller_message_draft": "Hi! Is this still available? Are the lights on the barn working? Is this the complete set, or are any animals or accessories missing? Are there any cracks, damage, or significant cleanliness issues with the playset or figures? What ages is this toy appropriate for?",
+  "seller_message_draft": "Hi! Is this still available? Is this the complete set with all the animals mentioned? Are the lights on the barn working? Are there any damages or cleanliness issues I should be aware of before visiting?",
   "limitations": [
-    "Cannot verify if the lights are actually working.",
-    "Cannot confirm the exact completeness of the set beyond what is visible.",
-    "Cannot assess the overall cleanliness or any hidden damage not visible in the photos.",
-    "Cannot determine the toy's history or previous usage conditions."
+    "Completeness of the set and all included accessories.",
+    "Whether the lights and any other electronic features are actually working.",
+    "The exact condition and any hidden damage not visible in the photos.",
+    "The overall cleanliness and any odors.",
+    "The history of use and any potential recalls."
   ],
   "research_recommended": [
-    "Check for any known recalls on this specific toy model.",
-    "Search for images of the complete set to compare against the listing.",
-    "Look for reviews or information about the durability and common issues with this toy."
+    "Research before you go: Completeness of the set and all included accessories.",
+    "Research before you go: Whether the lights and any other electronic features are actually working.",
+    "Research before you go: The exact condition and any hidden damage not visible in the photos.",
+    "Check for product recalls on this toy model or brand."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }

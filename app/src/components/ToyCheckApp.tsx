@@ -58,6 +58,7 @@ export function ToyCheckApp() {
 
   const [view, setView] = useState<View>("home");
   const [listingText, setListingText] = useState("");
+  const [sellerStarRating, setSellerStarRating] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [apiKey, setApiKey] = useState("");
   const [showByok, setShowByok] = useState(false);
@@ -160,6 +161,10 @@ export function ToyCheckApp() {
 
     const formData = new FormData();
     formData.append("listingText", listingText.trim());
+    const ratingTrimmed = sellerStarRating.trim();
+    if (ratingTrimmed) {
+      formData.append("sellerStarRating", ratingTrimmed);
+    }
     for (const file of images) {
       formData.append("images", file);
     }
@@ -194,6 +199,9 @@ export function ToyCheckApp() {
       setListingContext({
         description: listingText.trim(),
         imageUrls: [...uploadPreviewUrls],
+        sellerStarRating: ratingTrimmed
+          ? Number(ratingTrimmed)
+          : undefined,
       });
       setAnalysis(data as AnalysisResult);
       setResultsSource("analyze");
@@ -253,6 +261,11 @@ export function ToyCheckApp() {
           onListingTextChange={(v) => {
             resetError();
             setListingText(v);
+          }}
+          sellerStarRating={sellerStarRating}
+          onSellerStarRatingChange={(v) => {
+            resetError();
+            setSellerStarRating(v);
           }}
           images={images}
           onImagesChange={(files) => {

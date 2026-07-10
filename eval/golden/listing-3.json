@@ -1,12 +1,19 @@
 {
   "grade": "avoid",
   "grade_label": "Avoid",
-  "visit_summary": "Avoid this trip; the listing explicitly states key parts are missing, making it incomplete.",
+  "visit_summary": "Skip this trip - the listing explicitly states key pieces are missing, making it not worth your time.",
   "text_photo_alignment": "contradicts",
-  "alignment_summary": "The text states that no food, trays, or boxes are included, and that trays that were inside are gone. The provided photos show the kitchen set, but do not clearly indicate the presence or absence of these specific missing items, and the third image is a promotional photo that is not representative of the actual item's condition or completeness.",
+  "alignment_summary": "The text claims the toy is in 'Good' condition and refers to the photo for reference, but the text also explicitly states that trays and food are missing, contradicting the idea of a complete or good condition set.",
   "mismatches": [
     {
-      "issue": "The listing includes a promotional image that does not accurately represent the actual item being sold, as it is staged with many accessories and in a pristine setting.",
+      "issue": "Missing parts",
+      "sources": [
+        "text",
+        "photo"
+      ]
+    },
+    {
+      "issue": "Promotional image vs. actual item",
       "sources": [
         "text",
         "photo"
@@ -15,44 +22,50 @@
   ],
   "reasons": [
     {
-      "text": "No food or box toys included. No trays that were inside are gone!!",
+      "text": "Seller explicitly states 'No food or box toys included. No trays that were inside are gone!!'",
       "source": "text",
       "sentiment": "concern"
     },
     {
-      "text": "The third photo is a promotional image and not of the actual item.",
+      "text": "The listing includes a promotional image that shows a complete set with accessories, which contradicts the seller's statement about missing trays and food.",
+      "source": "text_and_photo",
+      "sentiment": "concern"
+    },
+    {
+      "text": "The actual item photos show the kitchen playset without any of the food or accessories that would typically accompany it.",
       "source": "photo",
       "sentiment": "concern"
     },
     {
-      "text": "The listing is for 'best offer' and has aggressive language like 'don't ask or will be ignored'.",
+      "text": "The seller's tone is dismissive and demanding ('don't ask or will be ignored').",
       "source": "text",
       "sentiment": "concern"
     },
     {
-      "text": "The text states 'Used - Good' condition, but the explicit mention of missing trays contradicts this claim for a playset where these are integral.",
-      "source": "text_and_photo",
+      "text": "The condition is listed as 'Used - Good' but the explicit mention of missing parts contradicts this.",
+      "source": "text",
       "sentiment": "concern"
     }
   ],
   "seller_questions": [
     "Is this still available?",
-    "Can you confirm what specific accessories or parts are missing besides the trays and food?",
-    "Are there any cracks, breaks, or significant damage to the main structure of the kitchen set?",
-    "What is the best offer you have received so far?",
-    "What is the age range this toy is typically used for?"
+    "Can you confirm exactly which pieces are missing besides the trays and food?",
+    "Are there any cracks, breaks, or significant damage to the main structure of the kitchen?",
+    "Does the microwave or any other part have working lights or sounds?",
+    "What is your best offer for the item as-is?"
   ],
-  "seller_message_draft": "Hi, is this still available? Can you confirm what specific accessories or parts are missing besides the trays and food? Are there any cracks, breaks, or significant damage to the main structure of the kitchen set? What is the best offer you have received so far?",
+  "seller_message_draft": "Hi, is this still available? Can you confirm exactly which pieces are missing besides the trays and food? Are there any cracks, breaks, or significant damage to the main structure of the kitchen? Does the microwave or any other part have working lights or sounds? What is your best offer for the item as-is?",
   "limitations": [
-    "The exact condition and completeness of the toy cannot be fully determined from the photos alone.",
-    "The functionality of any interactive parts (e.g., lights, sounds) is not shown.",
-    "The presence of any hidden damage or wear not visible in the photos.",
-    "The seller's responsiveness and willingness to negotiate fairly."
+    "Completeness of the set beyond the explicitly mentioned missing trays and food.",
+    "Working condition of any electronic or interactive features.",
+    "Hidden damage or wear not visible in the provided photos.",
+    "The exact condition and cleanliness of the toy.",
+    "The final sale price, as it is 'best offer'."
   ],
   "research_recommended": [
-    "Search for the exact model of this toy kitchen to determine all included accessories and their typical appearance.",
-    "Look for reviews or common issues with this specific toy.",
-    "Check Facebook Marketplace for similar listings to compare prices and completeness."
+    "Check for a complete parts list for this specific toy model online.",
+    "Search for similar listings to compare completeness and condition.",
+    "Look up common issues or recalls for this toy model."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }

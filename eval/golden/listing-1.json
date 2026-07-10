@@ -1,9 +1,9 @@
 {
   "grade": "good",
   "grade_label": "Good",
-  "visit_summary": "Worth a trip if you confirm the set is complete and undamaged with the seller.",
+  "visit_summary": "Worth a trip if you confirm completeness and any minor wear with the seller first.",
   "text_photo_alignment": "matches",
-  "alignment_summary": "The description accurately details the Peppa Pig cruise ship playset and its accessories, which are all visible in the provided photo. The photo appears to show a complete set with all described components.",
+  "alignment_summary": "The text description accurately reflects the items shown in the photo. The photo appears to be a real seller photo, not a stock image.",
   "mismatches": [],
   "reasons": [
     {
@@ -22,12 +22,12 @@
       "sentiment": "positive"
     },
     {
-      "text": "All described accessories and figures appear to be present in the photo.",
+      "text": "The photo shows the Peppa Pig cruise ship playset with the described figures and accessories.",
       "source": "photo",
       "sentiment": "positive"
     },
     {
-      "text": "The playset appears to be in good condition with no visible damage in the photo.",
+      "text": "The item appears to be in good condition with no obvious damage or excessive wear visible in the photo.",
       "source": "photo",
       "sentiment": "positive"
     }
@@ -35,20 +35,21 @@
   "seller_questions": [
     "Is this still available?",
     "Is this the complete set? Anything missing?",
-    "Any damage or cleanliness issues before I drive?",
-    "What ages is this appropriate for?"
+    "Any damage, cleanliness, or safety issues before I drive?",
+    "For motorized or music toys: does it need batteries or plug-in power? Do the sounds/motor work?"
   ],
-  "seller_message_draft": "Hi! Is this still available? Is this the complete set? Anything missing? Any damage or cleanliness issues before I drive? What ages is this appropriate for?",
+  "seller_message_draft": "Hi, is this still available? Is it the complete set with nothing missing? Are there any damage, cleanliness, or safety issues? For motorized or music toys, does it need batteries or plug-in power and do the sounds/motor work?",
   "limitations": [
-    "Cannot confirm the exact number of all small accessories included.",
-    "Cannot verify the working condition of any interactive features (if any).",
-    "Cannot assess the overall cleanliness or any hidden damage.",
-    "Cannot confirm if the item is from a smoke-free or pet-free home."
+    "Completeness of all small accessories not explicitly listed in text.",
+    "Exact condition of all parts, including any minor scuffs or scratches not visible in the photo.",
+    "Whether any electronic or sound features are present and working.",
+    "The presence of any hidden damage or structural issues not apparent in the photo."
   ],
   "research_recommended": [
-    "Check for any known recalls on this specific Peppa Pig playset.",
-    "Manually count all accessories against a complete set list if possible.",
-    "Verify the seller's profile and reviews for trustworthiness."
+    "Research before you go: Completeness of all small accessories not explicitly listed in text.",
+    "Research before you go: Exact condition of all parts, including any minor scuffs or scratches not visible in the photo.",
+    "Research before you go: Whether any electronic or sound features are present and working.",
+    "Check for product recalls on this toy model or brand."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }

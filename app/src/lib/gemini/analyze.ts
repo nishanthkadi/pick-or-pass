@@ -67,6 +67,45 @@ function resolveImageParts(input: AnalyzeListingInput): Part[] {
   return [];
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRetryableGeminiError(error: unknown): boolean {
+  const status =
+    typeof error === "object" &&
+    error !== null &&
+    "status" in error &&
+    typeof (error as { status: unknown }).status === "number"
+      ? (error as { status: number }).status
+      : undefined;
+  return status === 503 || status === 429;
+}
+
+async function generateWithRetry(
+  generativeModel: ReturnType<GoogleGenerativeAI["getGenerativeModel"]>,
+  request: Parameters<
+    ReturnType<GoogleGenerativeAI["getGenerativeModel"]>["generateContent"]
+  >[0],
+) {
+  const maxAttempts = 4;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await generativeModel.generateContent(request);
+    } catch (error) {
+      lastError = error;
+      if (!isRetryableGeminiError(error) || attempt === maxAttempts) {
+        throw error;
+      }
+      await sleep(1500 * attempt);
+    }
+  }
+
+  throw lastError;
+}
+
 export async function analyzeListing(
   input: AnalyzeListingInput,
 ): Promise<AnalysisResult> {
@@ -94,7 +133,7 @@ export async function analyzeListing(
     {
       text: `Analyze this Facebook Marketplace toy listing for visit-worthiness.
 
-Inspect photos closely for cracks, stress marks, missing parts, and promo-vs-real mismatches before choosing the grade. If damage is visible in photos, do not hedge with Not sure.
+Inspect photos closely for cracks, stress marks, chipped or flaking paint on wooden toys, stock/retail screenshots, missing parts, and promo-vs-real mismatches before choosing the grade. If damage or stock-image red flags are visible, do not hedge with Not sure.
 
 Listing description:
 ${listingText}`,
@@ -102,7 +141,7 @@ ${listingText}`,
     ...imageParts,
   ];
 
-  const result = await generativeModel.generateContent({
+  const result = await generateWithRetry(generativeModel, {
     contents: [{ role: "user", parts }],
   });
 

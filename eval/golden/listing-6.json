@@ -1,56 +1,55 @@
 {
   "grade": "avoid",
   "grade_label": "Avoid",
-  "visit_summary": "Avoid this trip; visible damage to the base makes it not worth your time.",
+  "visit_summary": "Avoid this trip; the shopping cart has visible damage and is likely incomplete.",
   "text_photo_alignment": "contradicts",
-  "alignment_summary": "The text states the item is in 'fair condition' and 'clean,' but the photo clearly shows significant damage to the base of the shopping cart.",
+  "alignment_summary": "The seller claims the item is in 'fair condition' and 'clean,' but the photo shows significant damage and wear.",
   "mismatches": [
     {
-      "issue": "Visible damage to the base of the shopping cart.",
+      "issue": "Visible damage contradicts claims of fair and clean condition.",
       "sources": [
+        "text",
         "photo"
       ]
     }
   ],
   "reasons": [
     {
-      "text": "Fair condition.",
-      "source": "text",
-      "sentiment": "neutral"
-    },
-    {
-      "text": "Clean.",
-      "source": "text",
-      "sentiment": "neutral"
-    },
-    {
-      "text": "Visible damage to the base of the shopping cart.",
+      "text": "Visible crack or stress mark on the blue plastic base near the front wheel.",
       "source": "photo",
       "sentiment": "concern"
     },
     {
-      "text": "Text claims 'fair condition' and 'clean' which is contradicted by visible damage in the photo.",
+      "text": "The item appears to be a toy shopping cart, but no accessories or other parts are shown, suggesting it may be incomplete.",
+      "source": "photo",
+      "sentiment": "concern"
+    },
+    {
+      "text": "The seller states the item is in 'fair condition' and 'clean,' which is contradicted by the visible damage and wear in the photo.",
       "source": "text_and_photo",
       "sentiment": "concern"
     }
   ],
   "seller_questions": [
     "Is this still available?",
+    "What is the price?",
     "Is this the complete set? Anything missing?",
-    "Are there any other damage or cleanliness issues not visible in the photos?",
-    "What ages is this appropriate for?"
+    "Can you describe the damage more specifically?",
+    "Are there any other condition issues?"
   ],
-  "seller_message_draft": "Hi! Is this still available? Is this the complete set? Anything missing? Are there any other damage or cleanliness issues not visible in the photos? What ages is this appropriate for?",
+  "seller_message_draft": "Hi, is this still available? What is the price? Is this the complete set? Can you describe the damage more specifically? Are there any other condition issues?",
   "limitations": [
-    "The exact extent of the damage to the base cannot be fully determined from the photos alone.",
-    "The completeness of the set and any included accessories are not specified.",
-    "The overall cleanliness beyond the visible damage is not fully ascertainable.",
-    "The functionality of the wheels and handle mechanism is not shown."
+    "The exact extent of the damage and if it affects functionality.",
+    "Whether any accessories or original parts are missing.",
+    "The overall cleanliness beyond what is visible in the photo.",
+    "The price of the item, as it is not listed.",
+    "The working condition of any moving parts, like the wheels or handle mechanism."
   ],
   "research_recommended": [
-    "Check for any recalls on this specific toy model.",
-    "Search for the original retail price or similar items to gauge value.",
-    "Look for other listings of this toy to compare condition and completeness."
+    "Research before you go: The exact extent of the damage and if it affects functionality.",
+    "Research before you go: Whether any accessories or original parts are missing.",
+    "Research before you go: The overall cleanliness beyond what is visible in the photo.",
+    "Check for product recalls on this toy model or brand."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }

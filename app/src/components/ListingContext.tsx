@@ -11,6 +11,7 @@ export type ListingContextData = {
   label?: string;
   description: string;
   imageUrls: string[];
+  sellerStarRating?: number;
 };
 
 type ListingContextProps = {
@@ -165,6 +166,14 @@ export function ListingContext({
                   <p className="mt-2 whitespace-pre-wrap text-base leading-relaxed text-foreground">
                     {listing.description}
                   </p>
+                  {listing.sellerStarRating != null && (
+                    <p className="mt-3 text-sm text-muted">
+                      Seller star rating you provided:{" "}
+                      <span className="font-medium text-foreground">
+                        {listing.sellerStarRating}/5
+                      </span>
+                    </p>
+                  )}
                 </div>
               </div>
             </Collapsible.Content>

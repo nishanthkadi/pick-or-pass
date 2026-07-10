@@ -13,6 +13,8 @@ const MAX_IMAGES = 3;
 type AnalyzeFormProps = {
   listingText: string;
   onListingTextChange: (value: string) => void;
+  sellerStarRating: string;
+  onSellerStarRatingChange: (value: string) => void;
   images: File[];
   onImagesChange: (files: File[]) => void;
   loading: boolean;
@@ -30,6 +32,8 @@ type AnalyzeFormProps = {
 export function AnalyzeForm({
   listingText,
   onListingTextChange,
+  sellerStarRating,
+  onSellerStarRatingChange,
   images,
   onImagesChange,
   loading,
@@ -45,9 +49,18 @@ export function AnalyzeForm({
 }: AnalyzeFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const inputId = useId();
+  const ratingId = useId();
+  const ratingHintId = useId();
   const [dragOver, setDragOver] = useState(false);
 
   const canAnalyze = listingText.trim().length > 0 && images.length > 0;
+  const ratingValue = sellerStarRating.trim();
+  const parsedRating = ratingValue ? Number(ratingValue) : undefined;
+  const ratingInvalid =
+    ratingValue.length > 0 &&
+    (!Number.isFinite(parsedRating) ||
+      parsedRating! < 0 ||
+      parsedRating! > 5);
 
   const previewUrls = useMemo(
     () => images.map((file) => URL.createObjectURL(file)),
@@ -75,13 +88,13 @@ export function AnalyzeForm({
         id="analyze-heading"
         eyebrow="Your listing"
         title="Check your listing"
-        description="Copy the listing text from Facebook Marketplace, then upload at least one photo."
+        description="Paste the full Marketplace listing text, add the seller star rating separately, then upload at least one photo."
       />
 
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (canAnalyze && !loading) onSubmit();
+          if (canAnalyze && !loading && !ratingInvalid) onSubmit();
         }}
         className="mt-6 space-y-6"
         aria-busy={loading}
@@ -91,21 +104,66 @@ export function AnalyzeForm({
             htmlFor="listing-text"
             className="text-subsection-title text-foreground"
           >
-            Listing description
+            Full listing description
           </label>
+          <p className="mt-1 text-sm text-muted">
+            On Facebook Marketplace, select all listing text and paste it here —
+            title, price, condition, seller name, and location.
+          </p>
           <textarea
             id="listing-text"
-            rows={6}
+            rows={8}
             required
             value={listingText}
             onChange={(e) => onListingTextChange(e.target.value)}
-            placeholder="Example: Brand name, condition, what's included, pickup area…"
+            placeholder={`Example paste:\nToddler Montessori Toy\n$3\nListed a week ago in San Jose, CA\nCondition\nUsed - Good\nStacking shape, and different color\nSeller information\nMah San\nHighly rated on Marketplace`}
             className={cn(
               "mt-2 w-full rounded-xl border-2 border-border bg-surface px-4 py-3 text-base text-foreground",
               "placeholder:text-muted-subtle",
               "focus:border-accent focus:outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-1",
             )}
           />
+        </div>
+
+        <div>
+          <label
+            htmlFor={ratingId}
+            className="text-subsection-title text-foreground"
+          >
+            Seller star rating <span className="font-normal text-muted">(optional)</span>
+          </label>
+          <p id={ratingHintId} className="mt-1 text-sm text-muted">
+            Copy-paste does not capture the star image on Marketplace. Look at
+            the seller profile and enter the rating here (for example, 4.5).
+          </p>
+          <div className="mt-2 flex items-center gap-3">
+            <input
+              id={ratingId}
+              type="number"
+              inputMode="decimal"
+              min={0}
+              max={5}
+              step={0.1}
+              value={sellerStarRating}
+              onChange={(e) => onSellerStarRatingChange(e.target.value)}
+              placeholder="4.5"
+              aria-describedby={ratingHintId}
+              aria-invalid={ratingInvalid}
+              className={cn(
+                "w-28 rounded-xl border-2 bg-surface px-4 py-3 text-base text-foreground",
+                ratingInvalid
+                  ? "border-destructive-border focus:border-destructive-border focus:ring-destructive-border/30"
+                  : "border-border focus:border-accent focus:ring-focus-ring",
+                "focus:outline-none focus:ring-2 focus:ring-offset-1",
+              )}
+            />
+            <span className="text-sm text-muted">out of 5</span>
+          </div>
+          {ratingInvalid && (
+            <p className="mt-2 text-sm text-destructive-text" role="alert">
+              Enter a rating between 0 and 5, or leave this blank.
+            </p>
+          )}
         </div>
 
         <div>
@@ -188,13 +246,13 @@ export function AnalyzeForm({
 
         {!canAnalyze && (
           <p className="text-base text-muted" role="status">
-            Add both listing text and at least one photo to continue.
+            Add the full listing paste and at least one photo to continue.
           </p>
         )}
 
         <Button
           type="submit"
-          disabled={!canAnalyze || loading}
+          disabled={!canAnalyze || loading || ratingInvalid}
           aria-describedby={loading ? "analyze-loading" : undefined}
           className="w-full sm:w-auto sm:min-w-[220px]"
         >

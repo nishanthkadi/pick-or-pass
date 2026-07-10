@@ -1,0 +1,46 @@
+{
+  "grade": "not_sure",
+  "grade_label": "Not sure",
+  "visit_summary": "Don't drive yet—ask the seller about completeness and working music modes before committing.",
+  "text_photo_alignment": "partially_matches",
+  "alignment_summary": "The description mentions two music modes, but the photos do not provide any evidence of this functionality. The overall condition appears good, but completeness cannot be confirmed.",
+  "mismatches": [],
+  "reasons": [
+    {
+      "text": "Condition described as 'like new' and photos appear to support this, with no obvious damage.",
+      "source": "text_and_photo",
+      "sentiment": "positive"
+    },
+    {
+      "text": "The listing mentions '2 different music modes' but there is no way to verify this from the photos.",
+      "source": "photo",
+      "sentiment": "concern"
+    },
+    {
+      "text": "The completeness of the set cannot be confirmed from the photos alone.",
+      "source": "photo",
+      "sentiment": "concern"
+    }
+  ],
+  "seller_questions": [
+    "Is this still available?",
+    "Is this the complete set? Anything missing?",
+    "Do the music modes work?",
+    "Any damage, cleanliness, or safety issues before I drive?"
+  ],
+  "seller_message_draft": "Hi, is this still available? Is this the complete set? Do the music modes work? Any damage, cleanliness, or safety issues before I drive?",
+  "limitations": [
+    "Completeness of the set and all accessories.",
+    "Whether the '2 different music modes' are functional.",
+    "The exact age appropriateness and any specific safety features.",
+    "The presence of any hidden damage not visible in the photos.",
+    "The price of the toy."
+  ],
+  "research_recommended": [
+    "Research before you go: Completeness of the set and all accessories.",
+    "Research before you go: Whether the '2 different music modes' are functional.",
+    "Research before you go: The exact age appropriateness and any specific safety features.",
+    "Check for product recalls on this toy model or brand."
+  ],
+  "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
+}

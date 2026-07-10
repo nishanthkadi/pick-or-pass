@@ -38,10 +38,30 @@ Saved listing or feedback
 - Prompt tuning for accurate reason source tagging and concrete limitations
 - Eval calibration checks for uncertainty quality
 
+## Shipped v1.9 Slice — Eval expansion + eval loop
+
+- Expanded eval set from **6 → 10 cases** with real Marketplace screenshots (`listing-7` through `listing-10`)
+- New failure patterns covered: worn wooden-toy paint, interactive power unknown, stock/retail screenshots, simple-toy sparse-text exception
+- **Schema hardening:** `normalizeAnalysisPayload` defaults missing `research_recommended` so eval runs don't crash on partial Gemini JSON
+- **API resilience:** retry with backoff on 503/429 in `analyze.ts`
+- **Prompt iteration** for v1.9 patterns in `system.ts` (stock photos, paint wear, simple-toy Good exception, interactive not_sure)
+
+### v1.9 eval baseline (2026-07-10)
+
+| Metric | Result |
+|---|---|
+| Cases in dataset | 10 |
+| Grade match (cases with goldens, score-only) | **7/7** |
+| Full rubric pass | **0/7** (themes/questions/visit wording strict) |
+| New cases with live grade match | **1/4** (`listing-8` Not sure ✓) |
+| New cases still failing grade | `listing-7` (Good/Not sure vs Avoid), `listing-9` (Not sure vs Avoid), `listing-10` (Not sure vs Good) |
+
+**Next eval step:** Re-run `npm run eval` when Gemini free-tier quota resets; deploy prompt changes if grade match holds ≥ 9/10.
+
 ## Next Product Moves
 
-1. Expand the eval set from 6 to roughly 20 real listings with failure tags.
-2. Add bounded research / retrieval-aided recall lookup (v1.9) after eval coverage is stronger.
+1. Finish prompt calibration on cases 7, 9, 10; optionally expand toward ~20 listings with failure tags.
+2. Add bounded research / retrieval-aided recall lookup (v2.0) after eval coverage is stronger.
 3. Add delete/export controls for saved listings.
 4. Revisit explicit evidence schema fields if source tagging stays unreliable.
 5. Promote consented feedback cases into `eval/dataset.jsonl` via Supabase admin review.

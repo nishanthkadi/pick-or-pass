@@ -2,48 +2,50 @@
   "grade": "not_sure",
   "grade_label": "Not sure",
   "visit_summary": "Don't drive yet - ask the seller about completeness and condition before committing.",
-  "text_photo_alignment": "partially_matches",
-  "alignment_summary": "The listing mentions extra characters and vehicles, and the photo shows the dollhouse with several figures and accessories. However, it's unclear if all original pieces are present or if the 'extras' are indeed complete.",
+  "text_photo_alignment": "insufficient_text",
+  "alignment_summary": "The listing text is very sparse and does not provide details about the toy's condition or completeness. The photo shows the toy and several accessories, but it's difficult to determine if anything is missing or if there are any hidden damages.",
   "mismatches": [],
   "reasons": [
     {
-      "text": "Comes with extra characters and vehicles.",
+      "text": "Listing description is very sparse.",
       "source": "text",
-      "sentiment": "positive"
+      "sentiment": "concern"
     },
     {
-      "text": "Dollhouse appears to be in good condition with furniture and accessories.",
+      "text": "It is unclear if the set is complete.",
       "source": "photo",
-      "sentiment": "positive"
+      "sentiment": "concern"
     },
     {
-      "text": "Several Peppa Pig characters and vehicles are visible.",
+      "text": "The condition of the toy is not described.",
+      "source": "text",
+      "sentiment": "concern"
+    },
+    {
+      "text": "The photo does not show any obvious damage, but hidden issues are possible.",
       "source": "photo",
-      "sentiment": "positive"
-    },
-    {
-      "text": "The exact completeness of the set and the nature of the 'extra' items are not specified.",
-      "source": "text_and_photo",
       "sentiment": "concern"
     }
   ],
   "seller_questions": [
     "Is this still available?",
-    "Is this the complete Peppa Pig dollhouse set, or are there any original pieces missing?",
-    "What are the 'extra characters and vehicles' that come with the set?",
-    "Are there any damages, cracks, or significant wear and tear on the dollhouse or accessories?",
-    "Is the dollhouse clean and ready for play?"
+    "Is this the complete set? Anything missing?",
+    "Any damage, cleanliness, or safety issues before I drive?",
+    "What ages is this appropriate for?"
   ],
-  "seller_message_draft": "Hi! Is this still available? Is this the complete Peppa Pig dollhouse set, or are there any original pieces missing? What are the 'extra characters and vehicles' that come with the set? Are there any damages, cracks, or significant wear and tear on the dollhouse or accessories? Is the dollhouse clean and ready for play?",
+  "seller_message_draft": "Hi, is this still available? Is this the complete set? Anything missing? Any damage, cleanliness, or safety issues before I drive? What ages is this appropriate for?",
   "limitations": [
-    "Cannot verify the exact number of included accessories or characters.",
-    "Cannot confirm the structural integrity or hidden damage of the toy.",
-    "Cannot assess the cleanliness or any lingering odors from the toy."
+    "Completeness of the set and all accessories.",
+    "Any hidden damage or wear not visible in the photos.",
+    "Functionality of any electronic or interactive components.",
+    "The exact age range or specific model of the toy.",
+    "The overall cleanliness and any potential safety concerns."
   ],
   "research_recommended": [
-    "Check for official Peppa Pig dollhouse accessory lists to compare with the photo.",
-    "Search for common issues or recalls related to this specific Peppa Pig dollhouse model.",
-    "Look for reviews or comparisons of this toy to understand its typical features and potential wear points."
+    "Research before you go: Completeness of the set and all accessories.",
+    "Research before you go: Any hidden damage or wear not visible in the photos.",
+    "Research before you go: Functionality of any electronic or interactive components.",
+    "Check for product recalls on this toy model or brand."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }

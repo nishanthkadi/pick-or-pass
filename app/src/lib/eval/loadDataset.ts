@@ -20,6 +20,13 @@ export const EVAL_FIELD_LIMITS = {
   descriptionMin: 10,
 } as const;
 
+export const listingContextSchema = z.object({
+  listed_price_usd: z.number().positive().optional(),
+  seller_star_rating: z.number().min(0).max(5).optional(),
+});
+
+export type ListingContext = z.infer<typeof listingContextSchema>;
+
 export const GUARDRAIL_SUGGESTIONS = [
   "hype language or urgency pressure",
   "proximity or meetup location as grading signal",
@@ -66,6 +73,7 @@ export const evalCaseSchema = z.object({
       must_not_cite: z.array(z.string()).default([]),
     })
     .default({ should_retrieve_topics: [], must_not_cite: [] }),
+  listing_context: listingContextSchema.optional(),
   golden_output_path: z.string().optional(),
   use_as_cached_demo: z.boolean().default(false),
   demo_output_path: z.string().optional(),
@@ -146,6 +154,17 @@ function collectRubricErrors(input: EvalCaseInput): string[] {
     errors.push(
       `notes.why_this_grade is required (min ${EVAL_FIELD_LIMITS.whyGradeMin} chars) — PM rationale for the expected grade`,
     );
+  }
+
+  const ctx = input.listing_context;
+  if (ctx) {
+    const hasPrice = ctx.listed_price_usd != null;
+    const hasRating = ctx.seller_star_rating != null;
+    if (!hasPrice && !hasRating) {
+      errors.push(
+        "listing_context must include at least one of listed_price_usd or seller_star_rating",
+      );
+    }
   }
 
   return errors;

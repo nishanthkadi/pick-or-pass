@@ -24,6 +24,7 @@ import {
   resolveImagePaths,
   type EvalCase,
 } from "../src/lib/eval/loadDataset";
+import { buildAnalysisListingText } from "../src/lib/eval/buildAnalysisListingText";
 import {
   printScoreSummary,
   scoreEvalRun,
@@ -87,7 +88,7 @@ async function runCase(
     console.log(`Scoring golden: ${evalCase.id}`);
   } else {
     result = await analyzeListing({
-      listingText: evalCase.description,
+      listingText: buildAnalysisListingText(evalCase),
       imagePaths,
     });
   }

@@ -1,4 +1,5 @@
 import type { InlineImage } from "@/lib/gemini/analyze";
+import { parseSellerStarRating } from "@/lib/listing/buildAnalysisListingText";
 
 export const ANALYZE_LIMITS = {
   maxImages: 3,
@@ -14,6 +15,7 @@ const ALLOWED_MIME_TYPES = new Set([
 
 export type ParsedAnalyzeRequest = {
   listingText: string;
+  sellerStarRating?: number;
   images: InlineImage[];
   apiKey?: string;
 };
@@ -101,6 +103,9 @@ export async function parseAnalyzeRequest(
     const formData = await req.formData();
     const listingText =
       String(formData.get("listingText") ?? formData.get("text") ?? "").trim();
+    const sellerStarRating = parseSellerStarRating(
+      formData.get("sellerStarRating"),
+    );
     const apiKeyRaw = formData.get("apiKey");
     const apiKey =
       typeof apiKeyRaw === "string" && apiKeyRaw.trim()
@@ -117,7 +122,7 @@ export async function parseAnalyzeRequest(
     }
 
     const images = await parseMultipartImages(formData);
-    return { listingText, images, apiKey };
+    return { listingText, sellerStarRating, images, apiKey };
   }
 
   if (contentType.includes("application/json")) {
@@ -125,6 +130,7 @@ export async function parseAnalyzeRequest(
     const listingText = String(
       body.listingText ?? body.text ?? "",
     ).trim();
+    const sellerStarRating = parseSellerStarRating(body.sellerStarRating);
     const apiKey =
       typeof body.apiKey === "string" && body.apiKey.trim()
         ? body.apiKey.trim()
@@ -140,7 +146,7 @@ export async function parseAnalyzeRequest(
     }
 
     const images = parseJsonImages(body.images);
-    return { listingText, images, apiKey };
+    return { listingText, sellerStarRating, images, apiKey };
   }
 
   throw new Error(

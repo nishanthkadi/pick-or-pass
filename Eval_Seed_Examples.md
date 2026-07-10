@@ -167,6 +167,72 @@ Human-readable summaries of the eval dataset. Edit `eval/dataset.jsonl` first, t
 
 ---
 
+## Example 7 — Wooden Activity Toy (Worn Paint) (`listing-7-wooden-toy`)
+
+**Description:** Condition: Used - Good. Keeps child entertained. Educational, made from natural wood. Missing one red ball.
+
+**Photo signal:** Real home photo of a used Rolimat wooden activity set. Xylophone mallet heads show heavy chipped blue paint; wood is scuffed. Red ball hole on top is empty — matches the missing-ball note.
+
+**Expected grade:** Avoid
+
+**Why this grade:** Seller is honest about the missing ball, but chipped paint and heavy wear are a mouthing safety concern for young kids — not worth the trip versus a better-condition set.
+
+**Visit summary must convey:** Skip this trip — worn paint, missing ball, and heavy use make it not worth driving for
+
+**First eval (v1.9):** Grade FAIL — model returned Good or Not sure; missed chipped mallet paint. Prompt rules added for wooden toy wear; re-run pending API quota.
+
+---
+
+## Example 8 — Dinosaur Track Playset (Power Unknown) (`listing-8-dino-toy`)
+
+**Description:** Condition: Used - like new. 2 different music modes. Great for toddlers.
+
+**Photo signal:** Real home photo of a Dinosaur Paradise motorized track set. Toy looks clean; no power cord, battery compartment, or music controls visible.
+
+**Expected grade:** Not sure
+
+**Why this grade:** Photo supports like-new appearance, but music modes and motorized lift cannot be verified from one photo — parent needs power-source and working-order answers first.
+
+**Visit summary must convey:** Don't drive yet — ask about power source, whether it works, and price before committing to a trip
+
+**First eval (v1.9):** Grade PASS — model returned Not sure.
+
+---
+
+## Example 9 — Cozy Coupe (Stock Image + Website Copy) (`listing-9-car-toy`)
+
+**Description:** Condition: Used - Good. Pasted Amazon-style marketing bullets (grows with kids, parent handle, cup holders, age/weight limits, etc.).
+
+**Photo signal:** Retail product photo of a Little Tikes Cozy Coupe on pure white background with carousel arrow UI — not a seller home photo.
+
+**Expected grade:** Avoid
+
+**Why this grade:** Stock/retailer screenshot plus pasted marketing copy instead of describing the actual used item — cannot verify condition or authenticity.
+
+**Visit summary must convey:** Skip this trip unless seller provides real photos of their actual item
+
+**First eval (v1.9):** Grade FAIL — model returned Not sure (insufficient_text). Prompt rules added for stock screenshots; re-run pending API quota.
+
+---
+
+## Example 10 — Montessori Peg Toy (Full FB Paste + Price) (`listing-10-simple-toy`)
+
+**Description:** Full Marketplace paste: Toddler Montessori Toy, $3, Used - Good, stacking shape / different colors. Seller Mah San, (9) reviews, Highly rated on Marketplace, joined 2008. Seller star rating: 4.5/5.
+
+**Listing context (structured):** `listed_price_usd: 3`, `seller_star_rating: 4.5`
+
+**Photo signal:** Real home photo of hedgehog peg-board; 12 pegs in four colors (3 each), clean condition.
+
+**Expected grade:** Good
+
+**Why this grade:** $3 for a complete-looking simple toy is strong value; credible seller (4.5/5, highly rated badge); photo matches description.
+
+**Visit summary must convey:** Worth a trip at $3 if you confirm all pegs are included
+
+**Note:** `(9)` is review count, not stars. Star rating (4.5/5) is text in the paste. Location (San Jose) must not affect grade.
+
+---
+
 ## ChatGPT gaps this product should beat
 
 See also [`eval/README.md`](eval/README.md).

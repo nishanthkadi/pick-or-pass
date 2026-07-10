@@ -18,7 +18,9 @@ app/src/data/demos/   ← synced cached demos for runtime ($0 demo path)
 
 ## Add a new test case
 
-**Easy way:** ask the agent to add an eval sample (uses the `add-eval-sample` skill — sequential prompts + validation).
+**Easy way:** ask the agent to add an eval sample (uses the `add-eval-sample` skill — **Quick mode**: id, images, full FB paste, grade).
+
+**Quick intake:** listing photo(s) only. Paste entire Marketplace screen text (price, condition, seller block) **plus seller star rating as text** (e.g. `Seller star rating: 4.5/5`). No seller rating screenshot.
 
 **CLI way** from `app/`:
 
@@ -72,6 +74,7 @@ Paths `golden/{id}.json` and `app/src/data/demos/{id}.json` are auto-filled when
 | `golden_output_path` | Auto-filled: `golden/{id}.json` |
 | `use_as_cached_demo` | Sync output to demo path (default true via `eval:add`) |
 | `demo_output_path` | Auto-filled: `app/src/data/demos/{id}.json` |
+| `listing_context` | Optional structured signals: `listed_price_usd` (number), `seller_star_rating` (0–5). At least one required if object is present. Eval runner appends these to model input via `buildAnalysisListingText`. |
 
 ## Scoring
 
@@ -82,5 +85,11 @@ npm run eval -- --no-sync          # live run, skip demo JSON sync
 ```
 
 **Checks:** grade, alignment, visit summary semantics, reason themes (≥60%), seller questions (≥50%), guardrails.
+
+When `listing_context` is set, additional calibration checks run:
+
+- `calibration_price_signal_used` — output mentions listed price or value
+- `calibration_seller_rating_used` — output mentions seller trust or rating
+- `calibration_no_invented_retail` — reasons do not cite dollar amounts absent from listing materials
 
 See [`COLLECTION_GUIDE.md`](COLLECTION_GUIDE.md) for collection workflow.

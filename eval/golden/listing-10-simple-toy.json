@@ -1,0 +1,55 @@
+{
+  "grade": "good",
+  "grade_label": "Good",
+  "visit_summary": "Worth a trip if you confirm the set is complete and clean with the seller first.",
+  "text_photo_alignment": "matches",
+  "alignment_summary": "The listing text and photo align well. The photo shows a hedgehog toy with colorful pegs, matching the description of a stacking shape and color toy.",
+  "mismatches": [],
+  "reasons": [
+    {
+      "text": "Listed price is very affordable.",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "The toy appears to be in good condition with no visible damage in the photo.",
+      "source": "photo",
+      "sentiment": "positive"
+    },
+    {
+      "text": "The listing includes a real home photo, not a stock image.",
+      "source": "photo",
+      "sentiment": "positive"
+    },
+    {
+      "text": "Seller has a high star rating.",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "The toy is described as 'Used - Good' condition.",
+      "source": "text",
+      "sentiment": "positive"
+    }
+  ],
+  "seller_questions": [
+    "Is this still available?",
+    "Is this the complete set? How many pegs should there be?",
+    "Are there any chips, cracks, or significant scratches on the toy?",
+    "Is the toy clean and ready for play?"
+  ],
+  "seller_message_draft": "Hi! Is this still available? Is this the complete set? How many pegs should there be? Are there any chips, cracks, or significant scratches on the toy? Is the toy clean and ready for play?",
+  "limitations": [
+    "Completeness of the pegs (number and colors) cannot be fully verified from the photo alone.",
+    "The exact condition and any minor wear or scratches not visible in the photo.",
+    "Whether the toy has any electronic or sound features that are not apparent.",
+    "The toy's overall cleanliness beyond what is visible in the image."
+  ],
+  "research_recommended": [
+    "Research before you go: Completeness of the pegs (number and colors) cannot be fully verified from the photo alone.",
+    "Research before you go: The exact condition and any minor wear or scratches not visible in the photo.",
+    "Research before you go: Whether the toy has any electronic or sound features that are not apparent.",
+    "Check for product recalls on this toy model or brand."
+  ],
+  "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
+}

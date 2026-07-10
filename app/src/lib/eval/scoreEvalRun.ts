@@ -272,6 +272,70 @@ function scoreCalibration(
       : "uses photo or mixed sources in reasons",
   });
 
+  const ctx = evalCase.listing_context;
+  if (ctx?.listed_price_usd != null) {
+    const priceBlob = [
+      result.visit_summary,
+      ...result.reasons.map((r) => r.text),
+    ].join(" ");
+    const normalizedBlob = normalize(priceBlob);
+    const priceStr = String(ctx.listed_price_usd);
+    const mentionsPrice =
+      normalizedBlob.includes(priceStr) ||
+      /\b(dollar|dollars|price|value|cheap|affordable|low cost)\b/.test(
+        normalizedBlob,
+      );
+    checks.push({
+      name: "calibration_price_signal_used",
+      pass: mentionsPrice,
+      detail: mentionsPrice
+        ? `output references listed price ($${ctx.listed_price_usd}) or value`
+        : `expected output to use listed price ($${ctx.listed_price_usd}) in reasons or visit_summary`,
+    });
+
+    const listingPrices = new Set(
+      (evalCase.description.match(/\$\d+(?:\.\d{1,2})?/g) ?? []).map((p) =>
+        p.replace("$", ""),
+      ),
+    );
+    listingPrices.add(String(ctx.listed_price_usd));
+
+    const reasonPrices =
+      result.reasons
+        .map((r) => r.text.match(/\$(\d+(?:\.\d{1,2})?)/g) ?? [])
+        .flat()
+        .map((p) => p.replace("$", "")) ?? [];
+
+    const inventedRetail = reasonPrices.some((p) => !listingPrices.has(p));
+    checks.push({
+      name: "calibration_no_invented_retail",
+      pass: !inventedRetail,
+      detail: inventedRetail
+        ? "reasons cite dollar amounts not present in listing materials"
+        : "no invented retail prices in reasons",
+    });
+  }
+
+  if (ctx?.seller_star_rating != null) {
+    const trustBlob = [
+      result.visit_summary,
+      ...result.reasons.map((r) => r.text),
+    ].join(" ");
+    const normalizedTrust = normalize(trustBlob);
+    const ratingStr = String(ctx.seller_star_rating);
+    const mentionsTrust =
+      /\b(rated|rating|stars|seller|trust|reputation|highly rated)\b/.test(
+        normalizedTrust,
+      ) || normalizedTrust.includes(ratingStr.replace(".", ""));
+    checks.push({
+      name: "calibration_seller_rating_used",
+      pass: mentionsTrust,
+      detail: mentionsTrust
+        ? `output references seller trust or rating (${ctx.seller_star_rating}/5)`
+        : `expected output to use seller star rating (${ctx.seller_star_rating}/5) in reasons or visit_summary`,
+    });
+  }
+
   return checks;
 }
 
