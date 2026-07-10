@@ -111,7 +111,6 @@ export function AnalyzeForm({
             On Facebook Marketplace, select all listing text and paste it here —
             title, price, condition, seller name, and location.
           </p>
-          <PasteListingGuide />
           <textarea
             id="listing-text"
             rows={8}
@@ -121,10 +120,11 @@ export function AnalyzeForm({
             placeholder={`Example paste:\nToddler Montessori Toy\n$3\nListed a week ago in San Jose, CA\nCondition\nUsed - Good\nStacking shape, and different color\nSeller information\nMah San\nHighly rated on Marketplace`}
             className={cn(
               "mt-3 w-full rounded-xl border-2 border-border bg-surface px-4 py-3 text-base text-foreground",
-              "placeholder:text-muted-subtle",
+              "placeholder:text-border-strong",
               "focus:border-accent focus:outline-none focus:ring-2 focus:ring-focus-ring focus:ring-offset-1",
             )}
           />
+          <PasteListingGuide />
         </div>
 
         <div>
@@ -153,6 +153,7 @@ export function AnalyzeForm({
               aria-invalid={ratingInvalid}
               className={cn(
                 "w-28 rounded-xl border-2 bg-surface px-4 py-3 text-base text-foreground",
+                "placeholder:text-border-strong",
                 ratingInvalid
                   ? "border-destructive-border focus:border-destructive-border focus:ring-destructive-border/30"
                   : "border-border focus:border-accent focus:ring-focus-ring",
