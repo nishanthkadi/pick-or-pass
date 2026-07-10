@@ -2,7 +2,6 @@
 
 import { deriveEvidenceSummary } from "@/lib/analysis/deriveEvidenceSummary";
 import type { AnalysisResult } from "@/lib/schema/analysis";
-import { cn } from "@/lib/utils";
 
 type EvidenceSummaryProps = {
   result: AnalysisResult;
@@ -12,23 +11,17 @@ function EvidenceSection({
   title,
   items,
   emptyLabel,
-  emphasized = false,
 }: {
   title: string;
   items: string[];
   emptyLabel?: string;
-  emphasized?: boolean;
 }) {
   if (items.length === 0 && !emptyLabel) {
     return null;
   }
 
   return (
-    <div
-      className={cn(
-        emphasized && "rounded-xl border border-border bg-background px-3 py-3",
-      )}
-    >
+    <div>
       <h3 className="text-sm font-semibold text-foreground">{title}</h3>
       {items.length > 0 ? (
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-muted">
@@ -45,7 +38,6 @@ function EvidenceSection({
 
 export function EvidenceSummary({ result }: EvidenceSummaryProps) {
   const evidence = deriveEvidenceSummary(result);
-  const emphasizeUnknowns = result.grade === "not_sure";
 
   return (
     <div className="space-y-4">
@@ -68,25 +60,18 @@ export function EvidenceSummary({ result }: EvidenceSummaryProps) {
         emptyLabel="No clear text-based claims surfaced."
       />
 
-      <EvidenceSection
-        title="Still unknown"
-        items={evidence.unknowns}
-        emphasized={emphasizeUnknowns}
-      />
+      <EvidenceSection title="Still unknown" items={evidence.unknowns} />
 
-      <div
-        className={cn(
-          emphasizeUnknowns &&
-            "rounded-xl border border-border bg-background px-3 py-3",
-        )}
-      >
-        <h3 className="text-sm font-semibold text-foreground">
-          What would change this verdict
-        </h3>
-        <p className="mt-1 text-sm leading-relaxed text-muted">
-          {evidence.verdictChangeSummary}
-        </p>
-      </div>
+      {evidence.verdictChangeSummary && (
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">
+            What would change this verdict
+          </h3>
+          <p className="mt-1 text-sm leading-relaxed text-muted">
+            {evidence.verdictChangeSummary}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

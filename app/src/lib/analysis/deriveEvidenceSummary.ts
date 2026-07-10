@@ -5,7 +5,7 @@ export type EvidenceSummary = {
   seenInPhotos: string[];
   claimedInText: string[];
   unknowns: string[];
-  verdictChangeSummary: string;
+  verdictChangeSummary?: string;
 };
 
 export function deriveConfidenceSummary(result: AnalysisResult): string {
@@ -45,16 +45,11 @@ function formatThemeList(themes: string[]): string {
   return `${themes.slice(0, -1).join(", ")}, and ${themes.at(-1)}`;
 }
 
-export function deriveVerdictChangeSummary(result: AnalysisResult): string {
-  if (result.grade === "good") {
-    return "Already leaning yes — confirming condition and completeness would strengthen confidence.";
-  }
-
-  if (result.grade === "avoid") {
-    if (result.text_photo_alignment === "contradicts") {
-      return "Unlikely to change unless the photo-condition mismatch is resolved.";
-    }
-    return "Unlikely to change unless the damage or missing parts are explained away.";
+export function deriveVerdictChangeSummary(
+  result: AnalysisResult,
+): string | undefined {
+  if (result.grade !== "not_sure") {
+    return undefined;
   }
 
   const blob = result.limitations.join(" ").toLowerCase();
