@@ -48,7 +48,7 @@ export function EvidenceSummary({ result }: EvidenceSummaryProps) {
   const emphasizeUnknowns = result.grade === "not_sure";
 
   return (
-    <div className="space-y-4 border-b border-border px-4 py-4 sm:px-5">
+    <div className="space-y-4">
       <div>
         <p className="text-sm font-semibold text-foreground">Confidence</p>
         <p className="mt-1 text-sm leading-relaxed text-muted">

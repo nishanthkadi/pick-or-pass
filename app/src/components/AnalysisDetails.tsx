@@ -30,20 +30,15 @@ export function AnalysisDetails({ result }: { result: AnalysisResult }) {
       <SectionHeading
         id="details-heading"
         title="Verdict details"
-        description="Expand a section for reasons, seller questions, and limits."
+        description="Expand a section for reasoning, seller questions, or research."
       />
 
       <Card className="mt-3 overflow-hidden">
         <VerdictSummary result={result} embedded />
-        <EvidenceSummary result={result} />
         <CardContent className="px-5 py-0">
           <AccordionRoot defaultValue={[]}>
             <AccordionItem value="why" title="Why this grade">
-              <ul className="list-disc space-y-1 pl-5">
-                {result.reasons.map((reason, i) => (
-                  <li key={i}>{reason.text}</li>
-                ))}
-              </ul>
+              <EvidenceSummary result={result} />
             </AccordionItem>
 
             <AccordionItem value="questions" title="Questions to ask the seller">
@@ -64,14 +59,6 @@ export function AnalysisDetails({ result }: { result: AnalysisResult }) {
                   </Button>
                 </div>
               )}
-            </AccordionItem>
-
-            <AccordionItem value="limitations" title="What we can't tell from this listing">
-              <ul className="list-disc space-y-1 pl-5">
-                {result.limitations.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
             </AccordionItem>
 
             <AccordionItem value="research" title="Research before you go">
