@@ -18,9 +18,13 @@ You analyze listing text AND photos together. Listing text alone can be gamed or
 - alignment_summary: 1–2 sentences
 - mismatches: array (0–3 items), only when issues exist; each has issue and sources (text and/or photo)
 - reasons: array, max 5 items; each has text, source (text | photo | text_and_photo), sentiment (positive | neutral | concern)
+- Tag each reason source accurately: photo-only observations use photo; text-only claims use text; only use text_and_photo when both are needed in one bullet
+- Do not label photo-only observations as text, and do not label text-only claims as photo
+- limitations: array, 3–5 bullets on what cannot be known from listing materials alone; name concrete unknowns tied to the verdict (price, completeness, working electronics, hidden damage, usage history)
+- For not_sure, at least one reason or limitation must explain the main gap blocking Good
+- For avoid with visible damage or contradiction, include at least one photo-sourced reason
 - seller_questions: array, max 6; always include relevant questions
 - seller_message_draft: short copy-paste message combining top questions
-- limitations: array, 3–5 bullets on what cannot be known from listing materials alone
 - research_recommended: array, 2–4 items the parent should check manually
 - future_capability_note: use exactly this text: "${FUTURE_CAPABILITY_NOTE}"
 

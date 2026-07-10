@@ -31,13 +31,20 @@ Saved listing or feedback
 - Manual saved listings default to "Improve app" opt-in but can be unchecked
 - Anonymous `owner_token` in localStorage ties same-browser saves and feedback without accounts
 
+## Shipped v1.8 Slice
+
+- Result-page **Evidence summary** derived from existing analysis JSON: confidence line, seen in photos, claimed in text, still unknown, what would change the verdict
+- No new model schema fields yet — UI derives buckets from `reasons`, `limitations`, and `seller_questions`
+- Prompt tuning for accurate reason source tagging and concrete limitations
+- Eval calibration checks for uncertainty quality
+
 ## Next Product Moves
 
-1. Build a small review workflow to promote consented saved listings into `eval/dataset.jsonl`.
-2. Add delete/export controls for saved listings.
-3. Expand the eval set from 6 to roughly 20 real listings with failure tags.
-4. Add uncertainty UX: evidence source, unknowns, and what would change the grade.
-5. Add bounded research only after eval coverage is stronger.
+1. Expand the eval set from 6 to roughly 20 real listings with failure tags.
+2. Add bounded research / retrieval-aided recall lookup (v1.9) after eval coverage is stronger.
+3. Add delete/export controls for saved listings.
+4. Revisit explicit evidence schema fields if source tagging stays unreliable.
+5. Promote consented feedback cases into `eval/dataset.jsonl` via Supabase admin review.
 
 ## Success Metrics
 

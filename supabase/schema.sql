@@ -122,6 +122,53 @@ create table if not exists public.improvement_reviews (
 create index if not exists improvement_reviews_listing_idx
   on public.improvement_reviews (saved_listing_id, created_at desc);
 
+-- Admin-only review helper. Query this from Supabase SQL Editor to decide
+-- which user feedback should become eval data; do not expose it in the app UI.
+create schema if not exists private;
+
+create or replace view private.feedback_review_candidates as
+select
+  sl.id as saved_listing_id,
+  sl.owner_token,
+  sl.source,
+  sl.listing_label,
+  sl.listing_text,
+  sl.listing_image_urls,
+  sl.grade,
+  sl.text_photo_alignment,
+  sl.allow_improvement_use,
+  sl.improvement_review_status,
+  sl.created_at as saved_listing_created_at,
+  lf.id as feedback_id,
+  lf.helpfulness,
+  lf.grade_accuracy,
+  lf.issue_tags,
+  lf.comment,
+  lf.metadata as feedback_metadata,
+  lf.created_at as feedback_created_at,
+  lf.updated_at as feedback_updated_at,
+  coalesce(
+    (
+      select jsonb_agg(
+        jsonb_build_object(
+          'storage_path', slp.storage_path,
+          'original_filename', slp.original_filename,
+          'content_type', slp.content_type,
+          'created_at', slp.created_at
+        )
+        order by slp.created_at
+      )
+      from public.saved_listing_photos slp
+      where slp.saved_listing_id = sl.id
+    ),
+    '[]'::jsonb
+  ) as photos
+from public.listing_feedback lf
+join public.saved_listings sl
+  on sl.id = lf.saved_listing_id
+where sl.allow_improvement_use = true
+  and sl.improvement_review_status <> 'not_shared';
+
 alter table public.saved_listings enable row level security;
 alter table public.saved_listing_photos enable row level security;
 alter table public.listing_feedback enable row level security;

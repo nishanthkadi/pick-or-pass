@@ -1,5 +1,59 @@
 # Build Notes — Marketplace Toy Check
 
+## Current Stage — v1.8 Uncertainty And Evidence UX
+
+**Goal:** Help users understand what the model actually knows vs. assumes, without adding fake confidence scores.
+
+**Built:**
+
+- Derived evidence summary in the results UI from existing analysis fields: seen in photos, claimed in text, still unknown, and what would change the verdict.
+- Qualitative confidence line under the verdict summary (no numeric score).
+- Prompt tuning for better reason `source` tagging and concrete limitations.
+- Lightweight eval calibration checks for `not_sure` gaps, photo evidence on damage avoids, and text-only over-reliance.
+
+**Product lesson:** Calibrated UX beats confidence theater. Good AI products separate evidence, assumptions, and unknowns instead of hiding uncertainty behind a single grade.
+
+## Current Stage — v1.7 Feedback Review Workflow
+
+**Goal:** Turn user feedback into reviewable evidence without exposing private listing data in the public app.
+
+**Built:**
+
+- Feedback and saved listings are captured in Supabase with editable feedback per saved listing.
+- Uploaded photos are stored privately in Supabase Storage, with stable storage references on saved listing rows.
+- Analyzed listings derive short labels from listing text for easier inspection.
+- Admin review stays out of the public UI. Use the private SQL view `private.feedback_review_candidates` from Supabase SQL Editor to inspect feedback-backed listings.
+
+**Admin review loop:**
+
+```sql
+select *
+from private.feedback_review_candidates
+order by feedback_updated_at desc;
+```
+
+To mark an item as an eval candidate:
+
+```sql
+update public.saved_listings
+set improvement_review_status = 'eval_candidate'
+where id = '<saved_listing_id>';
+
+insert into public.improvement_reviews (
+  saved_listing_id,
+  decision,
+  review_notes
+) values (
+  '<saved_listing_id>',
+  'eval_candidate',
+  'Candidate for eval after manual review.'
+);
+```
+
+Use `added_to_eval` once the case is actually added to `eval/dataset.jsonl`; use `rejected` when feedback is not reliable enough to become eval data.
+
+**Product lesson:** Feedback is signal, not truth. The app can collect user reactions, but a PM/reviewer still needs to decide whether the example is high-quality, representative, consented, and worth turning into an eval.
+
 ## Build Plan (v1)
 
 Teaching-oriented plan. Each phase has a **why** before the **what**.

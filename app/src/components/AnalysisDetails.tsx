@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { EvidenceSummary } from "@/components/EvidenceSummary";
 import { VerdictSummary } from "@/components/VerdictCard";
 import type { AnalysisResult } from "@/lib/schema/analysis";
 import { useState } from "react";
@@ -34,6 +35,7 @@ export function AnalysisDetails({ result }: { result: AnalysisResult }) {
 
       <Card className="mt-3 overflow-hidden">
         <VerdictSummary result={result} embedded />
+        <EvidenceSummary result={result} />
         <CardContent className="px-5 py-0">
           <AccordionRoot defaultValue={[]}>
             <AccordionItem value="why" title="Why this grade">

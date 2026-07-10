@@ -218,6 +218,63 @@ function scoreGuardrails(
   return { pass: violations.length === 0, violations };
 }
 
+const GAP_KEYWORDS =
+  /price|completeness|complete set|sparse|missing|feature|interactive|electronic|working|usage|hidden|damage|unknown|confirm|verify|thin|vague|gap/i;
+
+function scoreCalibration(
+  evalCase: EvalCase,
+  result: AnalysisResult,
+): RubricCheck[] {
+  const checks: RubricCheck[] = [];
+
+  if (result.grade === "not_sure") {
+    const gapBlob = [
+      ...result.limitations,
+      ...result.reasons
+        .filter((r) => r.sentiment === "concern" || r.sentiment === "neutral")
+        .map((r) => r.text),
+    ].join(" ");
+
+    const explainsGap = GAP_KEYWORDS.test(gapBlob);
+    checks.push({
+      name: "calibration_not_sure_gap",
+      pass: explainsGap,
+      detail: explainsGap
+        ? "not_sure explains a concrete gap"
+        : "not_sure missing a clear gap in reasons or limitations",
+    });
+  }
+
+  const hasDamageTag = evalCase.tags.some((tag) =>
+    /damage|structural|crack|incomplete/.test(tag),
+  );
+  if (result.grade === "avoid" && hasDamageTag) {
+    const hasPhotoReason = result.reasons.some(
+      (r) => r.source === "photo" || r.source === "text_and_photo",
+    );
+    checks.push({
+      name: "calibration_avoid_photo_evidence",
+      pass: hasPhotoReason,
+      detail: hasPhotoReason
+        ? "avoid case cites photo evidence"
+        : "avoid/damage case should include a photo-sourced reason",
+    });
+  }
+
+  const allTextReasons =
+    result.reasons.length > 0 &&
+    result.reasons.every((r) => r.source === "text");
+  checks.push({
+    name: "calibration_multimodal_sources",
+    pass: !allTextReasons,
+    detail: allTextReasons
+      ? "all reasons tagged text-only on a multimodal case"
+      : "uses photo or mixed sources in reasons",
+  });
+
+  return checks;
+}
+
 export function scoreEvalRun(
   evalCase: EvalCase,
   result: AnalysisResult,
@@ -286,6 +343,7 @@ export function scoreEvalRun(
         ? "no violations"
         : guardrails.violations.join("; "),
     },
+    ...scoreCalibration(evalCase, result),
   ];
 
   const rubricPass = checks.every((c) => c.pass);
