@@ -5,8 +5,7 @@ export type EvidenceSummary = {
   seenInPhotos: string[];
   claimedInText: string[];
   unknowns: string[];
-  whatWouldChangeVerdict: string[];
-  changeVerdictIntro: string;
+  verdictChangeSummary: string;
 };
 
 export function deriveConfidenceSummary(result: AnalysisResult): string {
@@ -36,14 +35,44 @@ export function deriveConfidenceSummary(result: AnalysisResult): string {
   return "Cautiously positive — worth confirming the main uncertainties with the seller first.";
 }
 
-function getChangeVerdictIntro(result: AnalysisResult): string {
+function formatThemeList(themes: string[]): string {
+  if (themes.length === 1) {
+    return themes[0];
+  }
+  if (themes.length === 2) {
+    return `${themes[0]} and ${themes[1]}`;
+  }
+  return `${themes.slice(0, -1).join(", ")}, and ${themes.at(-1)}`;
+}
+
+export function deriveVerdictChangeSummary(result: AnalysisResult): string {
   if (result.grade === "good") {
-    return "A stronger yes would need answers like:";
+    return "Already leaning yes — confirming condition and completeness would strengthen confidence.";
   }
+
   if (result.grade === "avoid") {
-    return "This would only change if the seller clarified:";
+    if (result.text_photo_alignment === "contradicts") {
+      return "Unlikely to change unless the photo-condition mismatch is resolved.";
+    }
+    return "Unlikely to change unless the damage or missing parts are explained away.";
   }
-  return "This could move to Good if the seller confirms:";
+
+  const blob = result.limitations.join(" ").toLowerCase();
+  const themes: string[] = [];
+
+  if (/price|cost|\$/.test(blob)) themes.push("price");
+  if (/complete|missing|accessories|parts/.test(blob)) themes.push("completeness");
+  if (/working|electronic|lights|sounds|interactive|feature/.test(blob)) {
+    themes.push("working features");
+  }
+  if (/damage|condition|clean/.test(blob)) themes.push("condition");
+  if (/text|detail|history|usage/.test(blob)) themes.push("listing details");
+
+  if (themes.length === 0) {
+    return "This could move to Good once the main unknowns below are confirmed with the seller.";
+  }
+
+  return `This could move to Good if ${formatThemeList(themes.slice(0, 3))} are confirmed.`;
 }
 
 export function deriveEvidenceSummary(result: AnalysisResult): EvidenceSummary {
@@ -60,7 +89,6 @@ export function deriveEvidenceSummary(result: AnalysisResult): EvidenceSummary {
     seenInPhotos,
     claimedInText,
     unknowns: result.limitations.slice(0, 4),
-    whatWouldChangeVerdict: result.seller_questions.slice(0, 3),
-    changeVerdictIntro: getChangeVerdictIntro(result),
+    verdictChangeSummary: deriveVerdictChangeSummary(result),
   };
 }

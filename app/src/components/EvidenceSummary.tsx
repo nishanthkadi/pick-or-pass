@@ -74,26 +74,19 @@ export function EvidenceSummary({ result }: EvidenceSummaryProps) {
         emphasized={emphasizeUnknowns}
       />
 
-      {evidence.whatWouldChangeVerdict.length > 0 && (
-        <div
-          className={cn(
-            emphasizeUnknowns &&
-              "rounded-xl border border-border bg-background px-3 py-3",
-          )}
-        >
-          <h3 className="text-sm font-semibold text-foreground">
-            What would change this verdict
-          </h3>
-          <p className="mt-1 text-sm text-muted-subtle">
-            {evidence.changeVerdictIntro}
-          </p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-muted">
-            {evidence.whatWouldChangeVerdict.map((item, index) => (
-              <li key={`change-${index}`}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div
+        className={cn(
+          emphasizeUnknowns &&
+            "rounded-xl border border-border bg-background px-3 py-3",
+        )}
+      >
+        <h3 className="text-sm font-semibold text-foreground">
+          What would change this verdict
+        </h3>
+        <p className="mt-1 text-sm leading-relaxed text-muted">
+          {evidence.verdictChangeSummary}
+        </p>
+      </div>
     </div>
   );
 }
