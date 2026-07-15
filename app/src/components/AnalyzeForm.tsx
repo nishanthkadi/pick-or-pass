@@ -108,8 +108,7 @@ export function AnalyzeForm({
             Full listing description
           </label>
           <p className="mt-1 text-sm text-muted">
-            On Facebook Marketplace, select all listing text and paste it here —
-            title, price, condition, seller name, and location.
+            Paste the full Marketplace listing — title, price, condition, seller.
           </p>
           <textarea
             id="listing-text"
@@ -135,8 +134,7 @@ export function AnalyzeForm({
             Seller star rating <span className="font-normal text-muted">(optional)</span>
           </label>
           <p id={ratingHintId} className="mt-1 text-sm text-muted">
-            Copy-paste does not capture the star image on Marketplace. Look at
-            the seller profile and enter the rating here (for example, 4.5).
+            Stars don&apos;t copy — type the rating from the seller profile (e.g. 4.5).
           </p>
           <div className="mt-2 flex items-center gap-3">
             <input
