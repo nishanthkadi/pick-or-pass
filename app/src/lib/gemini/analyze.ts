@@ -11,7 +11,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const DEFAULT_MODEL =
-  process.env.GEMINI_MODEL ?? "gemini-2.5-flash-lite";
+  process.env.GEMINI_MODEL ?? "gemini-flash-latest";
 
 function getClient(apiKey?: string) {
   const raw = apiKey ?? process.env.GEMINI_API_KEY;
@@ -124,31 +124,124 @@ export async function analyzeListing(
     model,
     generationConfig: {
       responseMimeType: "application/json",
-      temperature: 0.2,
+      temperature: 0.1,
+      maxOutputTokens: 4096,
     },
     systemInstruction: SYSTEM_PROMPT,
   });
 
+  const woodCue = /\b(wood|wooden|natural wood|xylophone|mallet)\b/i.test(
+    listingText,
+  );
+  const woodPaintGate = woodCue
+    ? `
+
+WOODEN TOY PAINT GATE (required before grade):
+Inspect every mallet head, peg, ball, and rounded grip in the photos.
+If any show large bare-wood patches where paint wore off → that is mouthable flaking paint → grade avoid (hard deal-breaker). Do not call the set "good condition." A single missing small piece does not override visible flaking paint.
+Include one photo-sourced concern reason naming the worn painted part if flaking is present.`
+    : "";
+
+  // Images first so the model scans pixels before reading optimistic seller text.
   const parts: Part[] = [
+    ...imageParts,
     {
       text: `Analyze this Facebook Marketplace toy listing for visit-worthiness.
 
-Inspect photos closely for cracks, stress marks, chipped or flaking paint on wooden toys, stock/retail screenshots, missing parts, and promo-vs-real mismatches before choosing the grade. If damage or stock-image red flags are visible, do not hedge with Not sure.
+PHOTO SCAN FIRST: stock/retailer chrome; cracks or bright white stress marks in plastic bases/handles/wheels; bare wood showing through paint on mallet heads/pegs/rounded grips (mouthable flaking = Avoid); empty compartments; promo-vs-real mismatches.${woodPaintGate}
+
+STACK:
+1) Hard deal-breaker visible OR text vs photo contradiction → avoid (never good, never hedge to not_sure).
+2) Else blocking unknown → not_sure: interactive/lights/sounds/motors claimed but not clearly powered-on in photos (painted lanterns do not count), OR multi-room/character playset with only 1–2 vague sentences like "comes with extras" (even if photo looks packed). Never call that "simple." Set text_photo_alignment to insufficient_text when text is that sparse.
+3) Else real-photo anchors → good (missing price / confirm pieces = hygiene only).
+
+If text_photo_alignment is "contradicts", grade must be avoid.
+If text_photo_alignment is "insufficient_text", grade must not be good.
+
+Required JSON: visit_summary, grade, grade_label, text_photo_alignment, alignment_summary, mismatches (array), reasons, limitations (3–5), seller_questions, seller_message_draft, research_recommended, future_capability_note.
 
 Listing description:
 ${listingText}`,
     },
-    ...imageParts,
   ];
 
-  const result = await generateWithRetry(generativeModel, {
-    contents: [{ role: "user", parts }],
-  });
+  let lastParseError: unknown;
+  for (let parseAttempt = 1; parseAttempt <= 2; parseAttempt++) {
+    const result = await generateWithRetry(generativeModel, {
+      contents: [{ role: "user", parts }],
+    });
 
-  const raw = result.response.text();
-  if (!raw) {
-    throw new Error("Empty response from Gemini.");
+    const raw = result.response.text();
+    if (!raw) {
+      lastParseError = new Error("Empty response from Gemini.");
+      continue;
+    }
+
+    try {
+      return applyListingTextPolicy(parseAnalysisResponse(raw), listingText);
+    } catch (error) {
+      lastParseError = error;
+      if (parseAttempt === 2) break;
+      await sleep(500);
+    }
   }
 
-  return parseAnalysisResponse(raw);
+  throw lastParseError instanceof Error
+    ? lastParseError
+    : new Error("Failed to parse Gemini JSON response.");
+}
+
+/** Product binds the model often drifts past: sparse complex playset text ≠ Good. */
+function applyListingTextPolicy(
+  result: AnalysisResult,
+  listingText: string,
+): AnalysisResult {
+  const text = listingText.trim();
+  const words = text.split(/\s+/).filter(Boolean);
+  const hasPrice = /\$\s*\d/.test(text);
+  const complexCue =
+    /\b(comes with|extras?|characters?|vehicles?|playset|dollhouse|multi[- ]?room)\b/i.test(
+      text,
+    );
+  const sparseComplex =
+    words.length <= 18 &&
+    !hasPrice &&
+    complexCue &&
+    !/\b(condition|like\s*new|brand new|complete set|includes)\b/i.test(text);
+
+  const interactiveCue =
+    /\b(lights?|sounds?|motors?|interactive|electronic|battery|batteries|working lights?)\b/i.test(
+      text,
+    );
+
+  if (sparseComplex && result.grade === "good") {
+    return {
+      ...result,
+      grade: "not_sure",
+      grade_label: "Not sure",
+      text_photo_alignment: "insufficient_text",
+      visit_summary:
+        "Don't drive yet — ask the seller about key gaps before committing.",
+      alignment_summary:
+        "Listing text is too sparse for a complex playset even when the photo looks complete.",
+    };
+  }
+
+  // Interactive claims without a hard Avoid: never Good on free-tier vision that
+  // often hallucinates "lights on" from painted lanterns.
+  if (interactiveCue && result.grade === "good") {
+    return {
+      ...result,
+      grade: "not_sure",
+      grade_label: "Not sure",
+      visit_summary:
+        "Don't drive yet — ask the seller about key gaps before committing.",
+      alignment_summary:
+        typeof result.alignment_summary === "string" && result.alignment_summary.trim()
+          ? result.alignment_summary
+          : "Interactive features claimed in text still need confirmation before a trip.",
+    };
+  }
+
+  return result;
 }

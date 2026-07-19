@@ -1,55 +1,41 @@
 {
   "grade": "good",
   "grade_label": "Good",
-  "visit_summary": "Worth a trip if you confirm completeness and any minor wear with the seller first.",
+  "visit_summary": "A complete, clean Peppa Pig cruise ship set in great cosmetic shape. Definitely worth a trip to pick up!",
   "text_photo_alignment": "matches",
-  "alignment_summary": "The text description accurately reflects the items shown in the photo. The photo appears to be a real seller photo, not a stock image.",
+  "alignment_summary": "The description accurately details the cruise ship, the three specific figures, and the beach-themed accessories shown in the photo.",
   "mismatches": [],
   "reasons": [
     {
-      "text": "Colorful Peppa Pig cruise ship playset includes three character figures and various beach-themed accessories.",
-      "source": "text",
+      "text": "All items described—including the three figures, slide, pool, and chairs—are clearly laid out and visible in the photo.",
+      "source": "text_and_photo",
       "sentiment": "positive"
     },
     {
-      "text": "Plastic ship has multiple levels, bunk beds, and a fold-out side panel revealing a ball pit scene.",
-      "source": "text",
-      "sentiment": "positive"
-    },
-    {
-      "text": "Set comes with a slide, lounge chairs, a table, and a pool.",
-      "source": "text",
-      "sentiment": "positive"
-    },
-    {
-      "text": "The photo shows the Peppa Pig cruise ship playset with the described figures and accessories.",
+      "text": "The plastic components, hinges, and fold-out panel appear structurally sound with no visible stress marks or cracks.",
       "source": "photo",
       "sentiment": "positive"
     },
     {
-      "text": "The item appears to be in good condition with no obvious damage or excessive wear visible in the photo.",
+      "text": "The toy is a manual playset with no complex electronic or motorized parts, minimizing the risk of hidden defects.",
       "source": "photo",
-      "sentiment": "positive"
+      "sentiment": "neutral"
     }
   ],
   "seller_questions": [
-    "Is this still available?",
-    "Is this the complete set? Anything missing?",
-    "Any damage, cleanliness, or safety issues before I drive?",
-    "For motorized or music toys: does it need batteries or plug-in power? Do the sounds/motor work?"
+    "Does the side panel fold up and latch securely when closing the ship?",
+    "Are there any cracks or loose hinges on the fold-out sections?",
+    "Is the price firm, and what are your general pickup windows?"
   ],
-  "seller_message_draft": "Hi, is this still available? Is it the complete set with nothing missing? Are there any damage, cleanliness, or safety issues? For motorized or music toys, does it need batteries or plug-in power and do the sounds/motor work?",
+  "seller_message_draft": "Hi! I'm interested in your Peppa Pig cruise ship playset. Does the side panel fold up and latch securely? If so, I'd love to arrange a time to pick it up. Thanks!",
   "limitations": [
-    "Completeness of all small accessories not explicitly listed in text.",
-    "Exact condition of all parts, including any minor scuffs or scratches not visible in the photo.",
-    "Whether any electronic or sound features are present and working.",
-    "The presence of any hidden damage or structural issues not apparent in the photo."
+    "The photo does not show the ship fully closed, so hinge tension and latch security cannot be fully verified.",
+    "Small scuffs or minor scratches on the plastic might not be visible under this lighting.",
+    "We cannot verify if every tiny accessory from the original retail box is present, though the set looks highly complete."
   ],
   "research_recommended": [
-    "Research before you go: Completeness of all small accessories not explicitly listed in text.",
-    "Research before you go: Exact condition of all parts, including any minor scuffs or scratches not visible in the photo.",
-    "Research before you go: Whether any electronic or sound features are present and working.",
-    "Check for product recalls on this toy model or brand."
+    "Compare with retail 'Peppa's Cruise Ship' listings to confirm if any minor accessories are missing.",
+    "Check for any active product recalls on Hasbro Peppa Pig playsets."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }

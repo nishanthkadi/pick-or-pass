@@ -1,46 +1,48 @@
 {
   "grade": "not_sure",
   "grade_label": "Not sure",
-  "visit_summary": "Don't drive yet—ask the seller about completeness and working music modes before committing.",
-  "text_photo_alignment": "partially_matches",
-  "alignment_summary": "The description mentions two music modes, but the photos do not provide any evidence of this functionality. The overall condition appears good, but completeness cannot be confirmed.",
+  "visit_summary": "Verify if the motorized stairs and music modes work before making the trip for this dinosaur track toy.",
+  "text_photo_alignment": "insufficient_text",
+  "alignment_summary": "The listing description is very brief and does not confirm if the motorized climbing mechanism or music modes are fully functional.",
   "mismatches": [],
   "reasons": [
     {
-      "text": "Condition described as 'like new' and photos appear to support this, with no obvious damage.",
-      "source": "text_and_photo",
+      "text": "The toy features a motorized stair-climbing mechanism and music, but these interactive elements cannot be verified as working from the photo.",
+      "source": "photo",
+      "sentiment": "concern"
+    },
+    {
+      "text": "The description is very brief and does not explicitly state if the toy has been tested and is fully functional.",
+      "source": "text",
+      "sentiment": "neutral"
+    },
+    {
+      "text": "Two small dinosaur figures are visible on the track, but these sets typically include more; the exact piece count is unconfirmed.",
+      "source": "photo",
+      "sentiment": "neutral"
+    },
+    {
+      "text": "The plastic tracks and structure appear intact with no obvious cracks or stress marks visible in the photo.",
+      "source": "photo",
       "sentiment": "positive"
-    },
-    {
-      "text": "The listing mentions '2 different music modes' but there is no way to verify this from the photos.",
-      "source": "photo",
-      "sentiment": "concern"
-    },
-    {
-      "text": "The completeness of the set cannot be confirmed from the photos alone.",
-      "source": "photo",
-      "sentiment": "concern"
     }
   ],
   "seller_questions": [
-    "Is this still available?",
-    "Is this the complete set? Anything missing?",
-    "Do the music modes work?",
-    "Any damage, cleanliness, or safety issues before I drive?"
+    "Do the motorized stairs and music modes work properly?",
+    "Are there any batteries currently in it, or is the battery compartment clean and free of corrosion?",
+    "How many small dinosaur figures are included with the set?",
+    "Are there any cracks or loose connections in the track pieces?"
   ],
-  "seller_message_draft": "Hi, is this still available? Is this the complete set? Do the music modes work? Any damage, cleanliness, or safety issues before I drive?",
+  "seller_message_draft": "Hi! Is this dinosaur track toy still available? I wanted to check if the motorized stairs and music modes are fully working, and how many little dinosaurs it comes with. Thanks!",
   "limitations": [
-    "Completeness of the set and all accessories.",
-    "Whether the '2 different music modes' are functional.",
-    "The exact age appropriateness and any specific safety features.",
-    "The presence of any hidden damage not visible in the photos.",
-    "The price of the toy."
+    "Cannot verify if the motorized escalator mechanism functions properly from a static photo.",
+    "Cannot confirm if the speaker/music modes work or sound distorted.",
+    "The exact number of original dinosaur figures included is unclear.",
+    "Battery compartment condition (corrosion) cannot be seen."
   ],
   "research_recommended": [
-    "Research before you go: Completeness of the set and all accessories.",
-    "Research before you go: Whether the '2 different music modes' are functional.",
-    "Research before you go: The exact age appropriateness and any specific safety features.",
-    "Check for product recalls on this toy model or brand."
+    "Search for 'Dinosaur Paradise climbing toy' online to see the original retail price and how many dinosaurs are included in a complete set.",
+    "Look up a video of the toy in action to understand how the motorized stairs and track flow are supposed to work."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }

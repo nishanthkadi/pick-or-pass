@@ -1,0 +1,48 @@
+{
+  "grade": "avoid",
+  "grade_label": "Avoid",
+  "visit_summary": "Skip this trip. The wooden mallet heads show significant paint chipping, posing a safety risk for young children.",
+  "text_photo_alignment": "contradicts",
+  "alignment_summary": "Seller lists condition as 'Good', but photos show heavily chipped paint on mouthable mallet tips.",
+  "mismatches": [
+    {
+      "issue": "Mouthable paint wear on mallets",
+      "sources": [
+        "photo",
+        "text"
+      ]
+    }
+  ],
+  "reasons": [
+    {
+      "text": "Significant paint chipping on the blue mallet heads exposes bare wood.",
+      "source": "photo",
+      "sentiment": "concern"
+    },
+    {
+      "text": "The set is missing the red ball accessory.",
+      "source": "text",
+      "sentiment": "concern"
+    },
+    {
+      "text": "Wooden frame and xylophone keys appear structurally intact.",
+      "source": "photo",
+      "sentiment": "positive"
+    }
+  ],
+  "seller_questions": [
+    "Is the paint non-toxic?",
+    "Are any other shapes missing?"
+  ],
+  "seller_message_draft": "Hi, is this still available? I noticed the paint wear on the mallets—do you know if it's non-toxic?",
+  "limitations": [
+    "Cannot verify paint safety or lead content.",
+    "Cannot test xylophone sound quality.",
+    "Unsure if other blocks are missing."
+  ],
+  "research_recommended": [
+    "Search Rolimate toy recalls.",
+    "Verify original set piece count."
+  ],
+  "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
+}

@@ -1,56 +1,42 @@
 {
   "grade": "not_sure",
   "grade_label": "Not sure",
-  "visit_summary": "Don't drive yet — ask the seller about completeness and working lights before committing.",
-  "text_photo_alignment": "partially_matches",
-  "alignment_summary": "The listing mentions working lights and specific animals, but the photos do not confirm the lights are working and some animals listed are not clearly visible or present in the photos.",
+  "visit_summary": "Don't drive yet — ask the seller about key gaps before committing.",
+  "text_photo_alignment": "matches",
+  "alignment_summary": "The listing description perfectly matches the photos, which clearly show all listed animal figures and verify the working lights.",
   "mismatches": [],
   "reasons": [
     {
-      "text": "Interactive toy farm playset has a red barn with working lights.",
-      "source": "text",
-      "sentiment": "neutral"
-    },
-    {
-      "text": "It comes with several animal figures including a chicken, a pink mouse, a sheep, a purple horse, a green cow, and a pink rabbit.",
-      "source": "text",
-      "sentiment": "neutral"
-    },
-    {
-      "text": "The photos show the farm playset with some animal figures.",
+      "text": "The barn's lanterns are clearly illuminated in the first photo, confirming the toy's electrical components are functional.",
       "source": "photo",
-      "sentiment": "neutral"
+      "sentiment": "positive"
     },
     {
-      "text": "The lights on the barn are not shown to be working in the photos.",
-      "source": "photo",
-      "sentiment": "concern"
-    },
-    {
-      "text": "Not all animals mentioned in the text (e.g., pink mouse, green cow, pink rabbit) are clearly identifiable or present in the photos.",
+      "text": "All listed animal figures (chicken, mouse, sheep, horse, cow, rabbit) are present and visible across the photos.",
       "source": "text_and_photo",
-      "sentiment": "concern"
+      "sentiment": "positive"
+    },
+    {
+      "text": "The toy appears clean with no visible structural cracks, heavy scuffs, or damaged plastic parts.",
+      "source": "photo",
+      "sentiment": "positive"
     }
   ],
   "seller_questions": [
-    "Is this still available?",
-    "Is this the complete set? Are all the animals mentioned included?",
-    "Are the lights on the barn working?",
-    "Are there any damages or cleanliness issues I should be aware of before visiting?"
+    "Do the sound effects and music still play properly when the animals are placed in their spots?",
+    "Is the battery compartment clean and free of any rust or corrosion?",
+    "Will you be including the batteries with the barn?"
   ],
-  "seller_message_draft": "Hi! Is this still available? Is this the complete set with all the animals mentioned? Are the lights on the barn working? Are there any damages or cleanliness issues I should be aware of before visiting?",
+  "seller_message_draft": "Hi! I'm interested in your toy barn playset. Do the sound effects and music still play properly, and is the battery compartment clean? If so, I'd love to arrange a time to pick it up. Thanks!",
   "limitations": [
-    "Completeness of the set and all included accessories.",
-    "Whether the lights and any other electronic features are actually working.",
-    "The exact condition and any hidden damage not visible in the photos.",
-    "The overall cleanliness and any odors.",
-    "The history of use and any potential recalls."
+    "We cannot verify if the toy's sound effects or music features are fully functional from photos alone.",
+    "The battery compartment's condition (potential corrosion) cannot be seen.",
+    "The listing does not specify if batteries are included with the purchase.",
+    "A small blue character shown in the second photo is not mentioned in the text description."
   ],
   "research_recommended": [
-    "Research before you go: Completeness of the set and all included accessories.",
-    "Research before you go: Whether the lights and any other electronic features are actually working.",
-    "Research before you go: The exact condition and any hidden damage not visible in the photos.",
-    "Check for product recalls on this toy model or brand."
+    "Look up the B. Toys Baa-Baa-Barn to see all original features and sound functions.",
+    "Check online retail prices for a new or used B. Toys Baa-Baa-Barn to ensure the seller's price is fair."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }

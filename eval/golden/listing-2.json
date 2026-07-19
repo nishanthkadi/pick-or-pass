@@ -1,51 +1,42 @@
 {
   "grade": "not_sure",
   "grade_label": "Not sure",
-  "visit_summary": "Don't drive yet - ask the seller about completeness and condition before committing.",
+  "visit_summary": "A detailed photo of a large Peppa Pig house, but the extremely brief description leaves condition and completeness unconfirmed.",
   "text_photo_alignment": "insufficient_text",
-  "alignment_summary": "The listing text is very sparse and does not provide details about the toy's condition or completeness. The photo shows the toy and several accessories, but it's difficult to determine if anything is missing or if there are any hidden damages.",
+  "alignment_summary": "The photo shows a large, multi-room wooden house with numerous figures and vehicles, but the text is limited to two brief sentences, leaving condition details unaddressed.",
   "mismatches": [],
   "reasons": [
     {
-      "text": "Listing description is very sparse.",
+      "text": "The photo shows a highly detailed, multi-room Peppa Pig wooden playhouse with multiple figures and vehicles.",
+      "source": "photo",
+      "sentiment": "positive"
+    },
+    {
+      "text": "The listing description is extremely sparse, offering no details on the overall condition, age, or specific completeness of the set.",
       "source": "text",
       "sentiment": "concern"
     },
     {
-      "text": "It is unclear if the set is complete.",
+      "text": "No structural damage or major paint flaking is immediately visible on the wooden house frame or plastic accessories in the photo.",
       "source": "photo",
-      "sentiment": "concern"
-    },
-    {
-      "text": "The condition of the toy is not described.",
-      "source": "text",
-      "sentiment": "concern"
-    },
-    {
-      "text": "The photo does not show any obvious damage, but hidden issues are possible.",
-      "source": "photo",
-      "sentiment": "concern"
+      "sentiment": "neutral"
     }
   ],
   "seller_questions": [
-    "Is this still available?",
-    "Is this the complete set? Anything missing?",
-    "Any damage, cleanliness, or safety issues before I drive?",
-    "What ages is this appropriate for?"
+    "Is the wooden house sturdy with all its screws and joints intact?",
+    "Are there any major scratches, chips, or drawing marks on the back or sides of the house?",
+    "Does this set come from a smoke-free and pet-free home?",
+    "Are all the figures and vehicles shown in the photo included in the final price?"
   ],
-  "seller_message_draft": "Hi, is this still available? Is this the complete set? Anything missing? Any damage, cleanliness, or safety issues before I drive? What ages is this appropriate for?",
+  "seller_message_draft": "Hi! I'm interested in your Peppa Pig wooden house. Is the structure still sturdy with all joints intact, and are all the figures/vehicles in the photo included? Thanks!",
   "limitations": [
-    "Completeness of the set and all accessories.",
-    "Any hidden damage or wear not visible in the photos.",
-    "Functionality of any electronic or interactive components.",
-    "The exact age range or specific model of the toy.",
-    "The overall cleanliness and any potential safety concerns."
+    "Cannot verify the structural integrity of the wooden joints or back panels from a single front-facing photo.",
+    "The exact number of originally included pieces versus missing parts is unstated in the brief description.",
+    "The physical cleanliness and any potential pet/smoke exposure are unverified due to sparse text."
   ],
   "research_recommended": [
-    "Research before you go: Completeness of the set and all accessories.",
-    "Research before you go: Any hidden damage or wear not visible in the photos.",
-    "Research before you go: Functionality of any electronic or interactive components.",
-    "Check for product recalls on this toy model or brand."
+    "Compare the included figures and furniture against the retail 'Peppa Pig Wooden Family Home' set to see what might be missing.",
+    "Check the typical resale price for this wooden house model to ensure the seller's asking price is fair."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }

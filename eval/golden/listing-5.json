@@ -1,50 +1,46 @@
 {
   "grade": "good",
   "grade_label": "Good",
-  "visit_summary": "Worth a trip if you confirm all pieces are included with the seller first.",
+  "visit_summary": "Excellent find! The workbench is in pristine, like-new condition with almost all accessories clearly visible.",
   "text_photo_alignment": "matches",
-  "alignment_summary": "The listing photos show a workbench that appears to be in excellent condition, matching the seller's description of 'like new' and 'basically brand new'. The set in the photo also appears to be complete with all accessories visible.",
+  "alignment_summary": "The real home photo shows a pristine, barely-used wooden workbench that perfectly aligns with the 'like new' and 'basically brand new' description.",
   "mismatches": [],
   "reasons": [
     {
-      "text": "Condition described as 'like new' and 'basically brand new'.",
-      "source": "text",
-      "sentiment": "positive"
-    },
-    {
-      "text": "Kids never quite took to it, suggesting minimal use.",
-      "source": "text",
-      "sentiment": "positive"
-    },
-    {
-      "text": "The workbench and all accessories appear to be in excellent condition with no visible damage.",
+      "text": "The workbench wood and paint show no signs of wear, chips, or scuffs in the photo.",
       "source": "photo",
       "sentiment": "positive"
     },
     {
-      "text": "The set appears to be complete with all accessories shown in the product image.",
+      "text": "Seller states the item is 'basically brand new' and 'kids never quite took to it,' explaining the excellent condition.",
+      "source": "text",
+      "sentiment": "positive"
+    },
+    {
+      "text": "Almost all key accessories (vise, gears, clock, tools) are present and set up in the real photo.",
       "source": "photo",
       "sentiment": "positive"
+    },
+    {
+      "text": "Seller is unsure if absolutely 100% of the tiny screws/bolts are there ('Think we have all pieces').",
+      "source": "text",
+      "sentiment": "neutral"
     }
   ],
   "seller_questions": [
-    "Is this still available?",
-    "Is this the complete set? Anything missing?",
-    "Any damage, cleanliness, or safety issues before I drive?",
-    "When was it purchased? Original price or retail link?"
+    "Hi! Is the workbench still available?",
+    "Are there any extra loose screws, bolts, or small wooden pieces stored separately that aren't pictured on the bench?",
+    "Does it come pre-assembled as shown, or will it be disassembled for pickup?"
   ],
-  "seller_message_draft": "Hi! Is this still available? Is this the complete set? Anything missing? Any damage, cleanliness, or safety issues before I drive? When was it purchased? Original price or retail link?",
+  "seller_message_draft": "Hi! I'm very interested in the Robud workbench. It looks in beautiful condition. Are there any extra loose screws or bolts included that aren't pictured on the bench? I can pick up this week!",
   "limitations": [
-    "Completeness of all small accessories (screws, nuts, etc.)",
-    "Any hidden damage not visible in the photos",
-    "Functionality of any moving parts or electronic components (if any)",
-    "Actual cleanliness beyond what is visually apparent"
+    "We cannot verify if every single small wooden screw or bolt from the original retail set is present.",
+    "The structural stability of the wooden joints cannot be fully tested from a static photo.",
+    "We cannot verify the seller's responsiveness or exact pickup location."
   ],
   "research_recommended": [
-    "Research before you go: Completeness of all small accessories (screws, nuts, etc.)",
-    "Research before you go: Any hidden damage not visible in the photos",
-    "Research before you go: Functionality of any moving parts or electronic components (if any)",
-    "Check for product recalls on this toy model or brand."
+    "Check the retail dimensions to ensure it fits in your vehicle assembled.",
+    "Verify if there are any active safety recalls for Robud wooden toys."
   ],
   "future_capability_note": "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you."
 }
