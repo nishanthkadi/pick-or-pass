@@ -1,6 +1,10 @@
-import { apiError, GEMINI_QUOTA_MESSAGE, RATE_LIMIT_MESSAGE } from "@/lib/api/errors";
+import { apiError, GEMINI_BUSY_MESSAGE, GEMINI_QUOTA_MESSAGE, RATE_LIMIT_MESSAGE } from "@/lib/api/errors";
 import { parseAnalyzeRequest } from "@/lib/api/parseAnalyzeRequest";
-import { analyzeListing, isGeminiQuotaError } from "@/lib/gemini/analyze";
+import {
+  analyzeListing,
+  isGeminiBusyError,
+  isGeminiQuotaError,
+} from "@/lib/gemini/analyze";
 import { buildAnalysisListingTextFromParts } from "@/lib/listing/buildAnalysisListingText";
 import {
   checkRateLimit,
@@ -103,11 +107,24 @@ export async function POST(req: Request) {
       );
     }
 
+    if (isGeminiBusyError(err) || /503|service unavailable|high demand/i.test(message)) {
+      return apiError(503, "MODEL_BUSY", GEMINI_BUSY_MESSAGE);
+    }
+
     if (message.includes("Missing GEMINI_API_KEY")) {
       return apiError(
         503,
         "SERVER_MISCONFIGURED",
         "Server API key is not configured. Use BYOK or try a cached demo.",
+      );
+    }
+
+    // Never leak raw provider strings to the client.
+    if (/GoogleGenerativeAI|generativelanguage\.googleapis/i.test(message)) {
+      return apiError(
+        500,
+        "ANALYSIS_FAILED",
+        "Something went wrong analyzing this listing. Please try again.",
       );
     }
 

@@ -41,10 +41,20 @@ const DEMO_CATALOG: DemoSummary[] = Object.entries(manifest).map(
   }),
 );
 
+const BUSY_AUTO_RETRY_SECONDS = 5;
+
 function getApiError(data: unknown): string | undefined {
   if (data && typeof data === "object" && "error" in data) {
     const err = (data as ApiErrorBody).error;
     return typeof err === "string" ? err : undefined;
+  }
+  return undefined;
+}
+
+function getApiErrorCode(data: unknown): string | undefined {
+  if (data && typeof data === "object" && "code" in data) {
+    const code = (data as ApiErrorBody).code;
+    return typeof code === "string" ? code : undefined;
   }
   return undefined;
 }
@@ -65,6 +75,8 @@ export function ToyCheckApp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rateLimited, setRateLimited] = useState(false);
+  const [modelBusy, setModelBusy] = useState(false);
+  const [busyRetryIn, setBusyRetryIn] = useState<number | null>(null);
 
   const [listingContext, setListingContext] =
     useState<ListingContextData | null>(null);
@@ -78,6 +90,27 @@ export function ToyCheckApp() {
     () => images.map((file) => URL.createObjectURL(file)),
     [images],
   );
+
+  const busyRetryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const busyCountdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const clearBusyRetrySchedule = useCallback(() => {
+    if (busyRetryTimerRef.current) {
+      clearTimeout(busyRetryTimerRef.current);
+      busyRetryTimerRef.current = null;
+    }
+    if (busyCountdownRef.current) {
+      clearInterval(busyCountdownRef.current);
+      busyCountdownRef.current = null;
+    }
+    setBusyRetryIn(null);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearBusyRetrySchedule();
+    };
+  }, [clearBusyRetrySchedule]);
 
   useEffect(() => {
     return () => {
@@ -110,6 +143,8 @@ export function ToyCheckApp() {
   const resetError = () => {
     setError(null);
     setRateLimited(false);
+    setModelBusy(false);
+    clearBusyRetrySchedule();
   };
 
   const goHome = () => {
@@ -152,7 +187,11 @@ export function ToyCheckApp() {
     }
   }, [markVisited]);
 
-  const runAnalyze = async (byokKey?: string) => {
+  const runAnalyze = async (
+    byokKey?: string,
+    options?: { isAutoRetry?: boolean },
+  ) => {
+    clearBusyRetrySchedule();
     resetError();
     setLoading(true);
     setListingContext(null);
@@ -179,6 +218,7 @@ export function ToyCheckApp() {
         body: formData,
       });
       const data = (await res.json()) as AnalysisResult | ApiErrorBody;
+      const errorCode = getApiErrorCode(data);
 
       if (res.status === 429) {
         setRateLimited(true);
@@ -187,6 +227,34 @@ export function ToyCheckApp() {
           getApiError(data) ??
             "AI quota or free-check limit hit. Try a sample listing or add your API key.",
         );
+      }
+
+      if (res.status === 503 && errorCode === "MODEL_BUSY") {
+        const busyMessage =
+          getApiError(data) ??
+          "The AI is busy right now. Try again in a moment, or use a sample listing.";
+        setModelBusy(true);
+        setError(busyMessage);
+
+        if (!options?.isAutoRetry) {
+          setBusyRetryIn(BUSY_AUTO_RETRY_SECONDS);
+          busyCountdownRef.current = setInterval(() => {
+            setBusyRetryIn((current) => {
+              if (current == null || current <= 1) {
+                if (busyCountdownRef.current) {
+                  clearInterval(busyCountdownRef.current);
+                  busyCountdownRef.current = null;
+                }
+                return null;
+              }
+              return current - 1;
+            });
+          }, 1000);
+          busyRetryTimerRef.current = setTimeout(() => {
+            void runAnalyze(byokKey, { isAutoRetry: true });
+          }, BUSY_AUTO_RETRY_SECONDS * 1000);
+        }
+        return;
       }
 
       if (!res.ok) {
@@ -327,7 +395,29 @@ export function ToyCheckApp() {
 
       {error && (
         <Alert variant="error" className="mt-6">
-          {error}
+          <div className="space-y-3">
+            <p>{error}</p>
+            {modelBusy && (
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-muted">
+                  {busyRetryIn != null
+                    ? `Retrying automatically in ${busyRetryIn}s…`
+                    : "Your listing and photos are still here."}
+                </p>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => {
+                    clearBusyRetrySchedule();
+                    void runAnalyze();
+                  }}
+                  className="inline-flex min-h-10 items-center justify-center rounded-xl bg-foreground px-4 py-2 text-sm font-semibold text-background transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+          </div>
         </Alert>
       )}
     </div>

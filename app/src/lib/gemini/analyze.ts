@@ -97,9 +97,18 @@ export function isGeminiQuotaError(error: unknown): boolean {
   );
 }
 
+/** Transient overload / high demand — safe to retry briefly. */
+export function isGeminiBusyError(error: unknown): boolean {
+  const status = getGeminiErrorStatus(error);
+  if (status === 503) return true;
+  return /503|service unavailable|high demand|currently experiencing|try again later/i.test(
+    geminiErrorMessage(error),
+  );
+}
+
 /** Transient backend blips — limited retry only. */
 function isTransientGeminiError(error: unknown): boolean {
-  return getGeminiErrorStatus(error) === 503;
+  return isGeminiBusyError(error);
 }
 
 async function generateWithRetry(
