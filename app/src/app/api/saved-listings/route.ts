@@ -12,8 +12,6 @@ import { ZodError } from "zod";
 
 export const runtime = "nodejs";
 
-const MAX_PHOTOS = 3;
-
 type SavedListingPhotoRow = {
   storage_path: string;
 };
@@ -33,10 +31,6 @@ type SavedListingRow = {
   created_at: string;
   saved_listing_photos?: SavedListingPhotoRow[];
 };
-
-function safeFileName(name: string) {
-  return name.toLowerCase().replace(/[^a-z0-9._-]+/g, "-").slice(0, 80);
-}
 
 function getResultKey(payload: {
   source: string;
@@ -160,6 +154,14 @@ function shortenLabel(value: string, maxLength: number) {
   return shortened || cleaned.slice(0, maxLength);
 }
 
+function storageErrorMessage(err: unknown, fallback: string) {
+  const message = err instanceof Error ? err.message : String(err ?? "");
+  if (/fetch failed|failed to fetch|ENOTFOUND|ECONNREFUSED|network/i.test(message)) {
+    return "Could not reach listing storage. Check Supabase env vars on the server, then try again.";
+  }
+  return message || fallback;
+}
+
 export async function GET(req: Request) {
   try {
     const ownerToken = new URL(req.url).searchParams.get("ownerToken")?.trim();
@@ -243,8 +245,10 @@ export async function GET(req: Request) {
       );
     }
 
-    const message =
-      err instanceof Error ? err.message : "Could not load saved listings.";
+    const message = storageErrorMessage(
+      err,
+      "Could not load saved listings.",
+    );
     return NextResponse.json(
       { error: message, code: "LOAD_SAVED_LISTINGS_FAILED" },
       { status: 500 },
@@ -274,10 +278,7 @@ export async function POST(req: Request) {
 
   try {
     const payload = savedListingPayloadSchema.parse(JSON.parse(payloadPart));
-    const photos = formData
-      .getAll("photos")
-      .filter((item): item is File => item instanceof File)
-      .slice(0, MAX_PHOTOS);
+    // Photos are uploaded separately via /api/saved-listings/photos (one per call).
     const supabase = getSupabaseAdminClient();
     const improvementReviewStatus: ImprovementReviewStatus =
       payload.allowImprovementUse ? "unreviewed" : "not_shared";
@@ -335,62 +336,10 @@ export async function POST(req: Request) {
       throw new Error(listingError?.message || "Could not save listing.");
     }
 
-    const bucket = getSavedListingPhotoBucket();
-    const photoRows = [];
-
-    for (const photo of existingListing?.id ? [] : photos) {
-      const extensionName = safeFileName(photo.name || "listing-photo");
-      const storagePath = [
-        payload.ownerToken,
-        listing.id,
-        `${crypto.randomUUID()}-${extensionName}`,
-      ].join("/");
-
-      const { error: uploadError } = await supabase.storage
-        .from(bucket)
-        .upload(storagePath, Buffer.from(await photo.arrayBuffer()), {
-          contentType: photo.type || "application/octet-stream",
-          upsert: false,
-        });
-
-      if (uploadError) {
-        throw new Error(uploadError.message);
-      }
-
-      photoRows.push({
-        saved_listing_id: listing.id,
-        storage_path: storagePath,
-        original_filename: photo.name || null,
-        content_type: photo.type || null,
-      });
-    }
-
-    if (photoRows.length > 0) {
-      const { error: photosError } = await supabase
-        .from("saved_listing_photos")
-        .insert(photoRows);
-
-      if (photosError) {
-        throw new Error(photosError.message);
-      }
-
-      const photoReferences = photoRows.map(
-        (photo) => `storage://${bucket}/${photo.storage_path}`,
-      );
-      const { error: photoReferencesError } = await supabase
-        .from("saved_listings")
-        .update({ listing_image_urls: photoReferences })
-        .eq("id", listing.id);
-
-      if (photoReferencesError) {
-        throw new Error(photoReferencesError.message);
-      }
-    }
-
     return NextResponse.json({
       ok: true,
       savedListingId: listing.id,
-      photoCount: photoRows.length,
+      photoCount: 0,
       improvementReviewStatus,
     });
   } catch (err) {
@@ -412,8 +361,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const message =
-      err instanceof Error ? err.message : "Could not save listing.";
+    const message = storageErrorMessage(err, "Could not save listing.");
     return NextResponse.json(
       { error: message, code: "SAVE_LISTING_FAILED" },
       { status: 500 },
@@ -497,8 +445,10 @@ export async function PATCH(req: Request) {
       );
     }
 
-    const message =
-      err instanceof Error ? err.message : "Could not update saved listing.";
+    const message = storageErrorMessage(
+      err,
+      "Could not update saved listing.",
+    );
     return NextResponse.json(
       { error: message, code: "UPDATE_SAVED_LISTING_FAILED" },
       { status: 500 },

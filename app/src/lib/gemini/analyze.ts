@@ -71,15 +71,35 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function isRetryableGeminiError(error: unknown): boolean {
-  const status =
+function getGeminiErrorStatus(error: unknown): number | undefined {
+  if (
     typeof error === "object" &&
     error !== null &&
     "status" in error &&
     typeof (error as { status: unknown }).status === "number"
-      ? (error as { status: number }).status
-      : undefined;
-  return status === 503 || status === 429;
+  ) {
+    return (error as { status: number }).status;
+  }
+  return undefined;
+}
+
+function geminiErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error ?? "");
+}
+
+/** Daily/minute quota — fail immediately; retries only burn time. */
+export function isGeminiQuotaError(error: unknown): boolean {
+  const status = getGeminiErrorStatus(error);
+  if (status === 429) return true;
+  return /quota|rate.?limit|resource.?exhausted|too many requests/i.test(
+    geminiErrorMessage(error),
+  );
+}
+
+/** Transient backend blips — limited retry only. */
+function isTransientGeminiError(error: unknown): boolean {
+  return getGeminiErrorStatus(error) === 503;
 }
 
 async function generateWithRetry(
@@ -88,18 +108,21 @@ async function generateWithRetry(
     ReturnType<GoogleGenerativeAI["getGenerativeModel"]>["generateContent"]
   >[0],
 ) {
-  const maxAttempts = 4;
+  const maxTransientAttempts = 2;
   let lastError: unknown;
 
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+  for (let attempt = 1; attempt <= maxTransientAttempts; attempt++) {
     try {
       return await generativeModel.generateContent(request);
     } catch (error) {
       lastError = error;
-      if (!isRetryableGeminiError(error) || attempt === maxAttempts) {
+      if (isGeminiQuotaError(error)) {
         throw error;
       }
-      await sleep(1500 * attempt);
+      if (!isTransientGeminiError(error) || attempt === maxTransientAttempts) {
+        throw error;
+      }
+      await sleep(1000 * attempt);
     }
   }
 

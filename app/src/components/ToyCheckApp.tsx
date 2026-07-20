@@ -185,7 +185,7 @@ export function ToyCheckApp() {
         setShowByok(true);
         throw new Error(
           getApiError(data) ??
-            "You've used today's free checks. Try a sample listing or add your API key.",
+            "AI quota or free-check limit hit. Try a sample listing or add your API key.",
         );
       }
 
@@ -311,13 +311,18 @@ export function ToyCheckApp() {
       )}
 
       {loading && view !== "analyze" && (
-        <p
-          className="mt-6 text-center text-base text-muted"
+        <div
+          className="mt-6 space-y-1 text-center"
           role="status"
           aria-live="polite"
         >
-          Checking if this trip is worth it…
-        </p>
+          <p className="text-base text-muted">
+            Checking if this trip is worth it…
+          </p>
+          <p className="text-sm text-muted">
+            Photo checks can take up to a minute — hang tight.
+          </p>
+        </div>
       )}
 
       {error && (

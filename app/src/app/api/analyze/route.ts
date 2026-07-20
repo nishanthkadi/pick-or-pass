@@ -1,6 +1,6 @@
-import { apiError, RATE_LIMIT_MESSAGE } from "@/lib/api/errors";
+import { apiError, GEMINI_QUOTA_MESSAGE, RATE_LIMIT_MESSAGE } from "@/lib/api/errors";
 import { parseAnalyzeRequest } from "@/lib/api/parseAnalyzeRequest";
-import { analyzeListing } from "@/lib/gemini/analyze";
+import { analyzeListing, isGeminiQuotaError } from "@/lib/gemini/analyze";
 import { buildAnalysisListingTextFromParts } from "@/lib/listing/buildAnalysisListingText";
 import {
   checkRateLimit,
@@ -9,6 +9,9 @@ import {
 } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
+
+/** Multimodal checks can exceed the Hobby default; fail with a response instead of hanging. */
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   let listingText: string;
@@ -86,6 +89,19 @@ export async function POST(req: Request) {
 
     const message =
       err instanceof Error ? err.message : "Analysis request failed.";
+
+    if (isGeminiQuotaError(err) || /quota|rate.?limit|429/i.test(message)) {
+      return NextResponse.json(
+        {
+          error: GEMINI_QUOTA_MESSAGE,
+          code: "RATE_LIMITED" as const,
+          reason: "gemini_quota",
+          byokHint:
+            "Pass apiKey in the request body to use your own Gemini key.",
+        },
+        { status: 429 },
+      );
+    }
 
     if (message.includes("Missing GEMINI_API_KEY")) {
       return apiError(

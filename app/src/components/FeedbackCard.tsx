@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { FeedbackIssueTag } from "@/lib/feedback/schema";
 import { useOwnerToken } from "@/lib/saved-listings/owner-token";
 import type { SavedListingSource } from "@/lib/saved-listings/schema";
+import { uploadListingPhotosQuietly } from "@/lib/saved-listings/uploadListingPhotos";
 import type { AnalysisResult } from "@/lib/schema/analysis";
 import { cn } from "@/lib/utils";
 import { Bookmark, Check, ThumbsDown, ThumbsUp } from "lucide-react";
@@ -46,6 +47,14 @@ async function getApiError(res: Response, fallback: string) {
   }
 }
 
+function networkOrFetchErrorMessage(err: unknown, fallback: string) {
+  const message = err instanceof Error ? err.message : String(err ?? "");
+  if (/fetch failed|failed to fetch|networkerror|load failed/i.test(message)) {
+    return "Could not reach storage just now. Please try again in a moment.";
+  }
+  return message || fallback;
+}
+
 export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
   const noteId = useId();
   const improveId = useId();
@@ -70,6 +79,15 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
         ? current.filter((item) => item !== tag)
         : [...current, tag].slice(0, 5),
     );
+  };
+
+  const queuePhotoUploads = (listingId: string) => {
+    if (context.source !== "analyze") return;
+    void uploadListingPhotosQuietly({
+      savedListingId: listingId,
+      ownerToken,
+      files: context.imageFiles,
+    });
   };
 
   const saveListing = async ({
@@ -105,6 +123,7 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
         }
 
         setUserSaved(true);
+        queuePhotoUploads(savedListingId);
         return savedListingId;
       }
 
@@ -122,10 +141,6 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
           allowImprovementUse: improvementUse,
         }),
       );
-
-      for (const file of context.imageFiles ?? []) {
-        formData.append("photos", file);
-      }
 
       const res = await fetch("/api/saved-listings", {
         method: "POST",
@@ -145,10 +160,13 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
 
       setSavedListingId(data.savedListingId);
       setUserSaved(saveForUser);
+      queuePhotoUploads(data.savedListingId);
       return data.savedListingId;
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Could not save this listing.";
+      const message = networkOrFetchErrorMessage(
+        err,
+        "Could not save this listing.",
+      );
       setSaveError(message);
       throw new Error(message);
     } finally {
@@ -164,6 +182,7 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
     setHelpfulness(value);
 
     try {
+      const alreadyHadListing = Boolean(savedListingId);
       const linkedListingId =
         savedListingId ??
         (await saveListing({
@@ -173,6 +192,11 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
 
       if (!linkedListingId) {
         throw new Error("Could not link feedback to this listing.");
+      }
+
+      // saveListing already queued photos for new rows; re-queue if listing existed.
+      if (alreadyHadListing) {
+        queuePhotoUploads(linkedListingId);
       }
 
       const res = await fetch("/api/feedback", {
@@ -211,7 +235,7 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
       setSubmitted(true);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Could not save feedback.",
+        networkOrFetchErrorMessage(err, "Could not save feedback."),
       );
     } finally {
       setSubmitting(false);

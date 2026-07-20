@@ -28,6 +28,14 @@ async function recordFeedback(record: FeedbackRecord, persistToFile = false) {
   console.info("pick_or_pass_feedback", line.trim());
 }
 
+function storageErrorMessage(err: unknown, fallback: string) {
+  const message = err instanceof Error ? err.message : String(err ?? "");
+  if (/fetch failed|failed to fetch|ENOTFOUND|ECONNREFUSED|network/i.test(message)) {
+    return "Could not reach feedback storage. Check Supabase env vars on the server, then try again.";
+  }
+  return message || fallback;
+}
+
 export async function POST(req: Request) {
   let body: unknown;
 
@@ -99,8 +107,10 @@ export async function POST(req: Request) {
       );
     }
 
-    const message =
-      err instanceof Error ? err.message : "Could not record feedback.";
+    const message = storageErrorMessage(
+      err,
+      "Could not record feedback.",
+    );
     return NextResponse.json(
       { error: message, code: "FEEDBACK_FAILED" },
       { status: 500 },

@@ -260,8 +260,14 @@ export function AnalyzeForm({
           {loading ? "Checking if this trip is worth it…" : "Get my verdict"}
         </Button>
         {loading && (
-          <p id="analyze-loading" className="sr-only" aria-live="polite">
-            Analyzing your listing. This may take a few seconds.
+          <p
+            id="analyze-loading"
+            className="text-sm leading-relaxed text-muted"
+            role="status"
+            aria-live="polite"
+          >
+            Looking at your photos and listing text. This can take up to a
+            minute — hang tight.
           </p>
         )}
 

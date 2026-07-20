@@ -19,3 +19,6 @@ export function apiError(
 
 export const RATE_LIMIT_MESSAGE =
   "Free demo limit reached. Try a cached example above, come back tomorrow, or paste your own Gemini API key to analyze now.";
+
+export const GEMINI_QUOTA_MESSAGE =
+  "The AI service is out of free quota right now. Try a sample listing, wait and retry later, or paste your own Gemini API key to continue.";

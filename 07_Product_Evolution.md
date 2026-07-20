@@ -65,6 +65,21 @@ Saved listing or feedback
 3. Add delete/export controls for saved listings.
 4. Revisit explicit evidence schema fields if source tagging stays unreliable.
 5. Promote consented feedback cases into `eval/dataset.jsonl` via Supabase admin review.
+6. Later: cheap-first model routing when cost/quota hurts (see below) — not current work.
+
+## Longer-term — model cost / quality routing (not building yet)
+
+**Learning (v1.9+ eval):** Grade quality is not only prompt/policy. Subtle photo deal-breakers (e.g. mouthable paint wear on wooden mallets) failed on `flash-lite` and passed on stronger flash. Text/policy failures (sparse playset, unverified interactive) were better fixed with product binds than with a bigger model.
+
+**Proposed later bet:** cheap-first cascade —
+
+1. Default to lite for most analyses
+2. Escalate to stronger vision only on high-risk cues (e.g. wood / mouthable paint / structural damage language) or suspicious all-positive Good outputs
+3. Do not escalate for cases already handled by code/policy binds
+
+**Watch if built:** % escalated, grade flips on escalate, cost per analysis, false Avoid rate.
+
+Ship only when free-tier cost/quota or volume makes default-stronger-model painful — until then, keep stronger default and treat this as a documented efficiency option.
 
 ## Success Metrics
 
