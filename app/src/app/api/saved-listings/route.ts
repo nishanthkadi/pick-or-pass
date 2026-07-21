@@ -11,6 +11,7 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 export const runtime = "nodejs";
+export const maxDuration = 30;
 
 type SavedListingPhotoRow = {
   storage_path: string;
@@ -257,27 +258,35 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  let formData: FormData;
+  let rawPayload: unknown;
 
+  const contentType = req.headers.get("content-type") ?? "";
   try {
-    formData = await req.formData();
+    if (contentType.includes("application/json")) {
+      rawPayload = await req.json();
+    } else {
+      const formData = await req.formData();
+      const payloadPart = formData.get("payload");
+      if (typeof payloadPart !== "string") {
+        return NextResponse.json(
+          { error: "Missing saved listing payload.", code: "BAD_REQUEST" },
+          { status: 400 },
+        );
+      }
+      rawPayload = JSON.parse(payloadPart);
+    }
   } catch {
     return NextResponse.json(
-      { error: "Save request must be multipart form data.", code: "BAD_REQUEST" },
-      { status: 400 },
-    );
-  }
-
-  const payloadPart = formData.get("payload");
-  if (typeof payloadPart !== "string") {
-    return NextResponse.json(
-      { error: "Missing saved listing payload.", code: "BAD_REQUEST" },
+      {
+        error: "Save request must be valid JSON or multipart form data.",
+        code: "BAD_REQUEST",
+      },
       { status: 400 },
     );
   }
 
   try {
-    const payload = savedListingPayloadSchema.parse(JSON.parse(payloadPart));
+    const payload = savedListingPayloadSchema.parse(rawPayload);
     // Photos are uploaded separately via /api/saved-listings/photos (one per call).
     const supabase = getSupabaseAdminClient();
     const improvementReviewStatus: ImprovementReviewStatus =

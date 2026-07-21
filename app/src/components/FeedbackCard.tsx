@@ -2,6 +2,11 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import type { FeedbackIssueTag } from "@/lib/feedback/schema";
+import {
+  friendlyStorageClientError,
+  readJsonBody,
+  truncateForStorage,
+} from "@/lib/saved-listings/clientApi";
 import { useOwnerToken } from "@/lib/saved-listings/owner-token";
 import type { SavedListingSource } from "@/lib/saved-listings/schema";
 import { uploadListingPhotosQuietly } from "@/lib/saved-listings/uploadListingPhotos";
@@ -39,20 +44,9 @@ const issueOptions: Array<{ value: FeedbackIssueTag; label: string }> = [
 ];
 
 async function getApiError(res: Response, fallback: string) {
-  try {
-    const data = (await res.json()) as { error?: unknown };
-    return typeof data.error === "string" ? data.error : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function networkOrFetchErrorMessage(err: unknown, fallback: string) {
-  const message = err instanceof Error ? err.message : String(err ?? "");
-  if (/fetch failed|failed to fetch|networkerror|load failed/i.test(message)) {
-    return "Could not reach storage just now. Please try again in a moment.";
-  }
-  return message || fallback;
+  const parsed = await readJsonBody<{ error?: unknown }>(res);
+  if (!parsed.ok) return parsed.error || fallback;
+  return typeof parsed.data.error === "string" ? parsed.data.error : fallback;
 }
 
 export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
@@ -127,43 +121,45 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
         return savedListingId;
       }
 
-      const formData = new FormData();
-      formData.append(
-        "payload",
-        JSON.stringify({
+      const res = await fetch("/api/saved-listings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           ownerToken,
           source: context.source,
-          listingText: context.listingDescription,
-          listingLabel: context.listingLabel,
+          listingText: truncateForStorage(context.listingDescription, 4000),
+          listingLabel: truncateForStorage(context.listingLabel, 120),
           listingImageUrls: context.source === "demo" ? context.imageUrls : [],
           analysis,
           userSaved: saveForUser,
           allowImprovementUse: improvementUse,
         }),
-      );
-
-      const res = await fetch("/api/saved-listings", {
-        method: "POST",
-        body: formData,
       });
 
+      const parsed = await readJsonBody<{
+        savedListingId?: string;
+        error?: string;
+      }>(res);
+      if (!parsed.ok) {
+        throw new Error(parsed.error);
+      }
       if (!res.ok) {
         throw new Error(
-          await getApiError(res, "Could not save this listing."),
+          typeof parsed.data.error === "string"
+            ? parsed.data.error
+            : "Could not save this listing.",
         );
       }
-
-      const data = (await res.json()) as { savedListingId?: string };
-      if (!data.savedListingId) {
+      if (!parsed.data.savedListingId) {
         throw new Error("Saved listing response was missing an id.");
       }
 
-      setSavedListingId(data.savedListingId);
+      setSavedListingId(parsed.data.savedListingId);
       setUserSaved(saveForUser);
-      queuePhotoUploads(data.savedListingId);
-      return data.savedListingId;
+      queuePhotoUploads(parsed.data.savedListingId);
+      return parsed.data.savedListingId;
     } catch (err) {
-      const message = networkOrFetchErrorMessage(
+      const message = friendlyStorageClientError(
         err,
         "Could not save this listing.",
       );
@@ -194,7 +190,6 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
         throw new Error("Could not link feedback to this listing.");
       }
 
-      // saveListing already queued photos for new rows; re-queue if listing existed.
       if (alreadyHadListing) {
         queuePhotoUploads(linkedListingId);
       }
@@ -213,30 +208,37 @@ export function FeedbackCard({ analysis, context }: FeedbackCardProps) {
               : undefined,
           metadata: {
             source: context.source,
-            listingLabel: context.listingLabel,
-            listingDescription: context.listingDescription,
+            listingLabel: truncateForStorage(context.listingLabel, 120),
+            listingDescription: truncateForStorage(
+              context.listingDescription,
+              4000,
+            ),
             imageCount: context.imageCount,
             analysis: {
               grade: analysis.grade,
               grade_label: analysis.grade_label,
               text_photo_alignment: analysis.text_photo_alignment,
-              visit_summary: analysis.visit_summary,
+              visit_summary: truncateForStorage(analysis.visit_summary, 1000),
             },
           },
         }),
       });
 
+      const parsed = await readJsonBody<{ ok?: boolean; error?: string }>(res);
+      if (!parsed.ok) {
+        throw new Error(parsed.error);
+      }
       if (!res.ok) {
         throw new Error(
-          await getApiError(res, "Could not save feedback. Please try again."),
+          typeof parsed.data.error === "string"
+            ? parsed.data.error
+            : "Could not save feedback. Please try again.",
         );
       }
 
       setSubmitted(true);
     } catch (err) {
-      setError(
-        networkOrFetchErrorMessage(err, "Could not save feedback."),
-      );
+      setError(friendlyStorageClientError(err, "Could not save feedback."));
     } finally {
       setSubmitting(false);
     }

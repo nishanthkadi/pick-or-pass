@@ -9,6 +9,7 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 export const runtime = "nodejs";
+export const maxDuration = 30;
 
 type FeedbackRecord = {
   id: string;
