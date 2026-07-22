@@ -64,7 +64,7 @@ Saved listing or feedback
 2. Add bounded research / retrieval-aided recall lookup (v2.0) after eval coverage is stronger.
 3. Add delete/export controls for saved listings.
 4. Revisit explicit evidence schema fields if source tagging stays unreliable.
-5. Promote consented feedback cases into `eval/dataset.jsonl` via Supabase admin review.
+5. Promote consented feedback cases into `eval/dataset.jsonl` via `npm run review-feedback` (CLI; SQL Editor fallback).
 6. Later: cheap-first model routing when cost/quota hurts (see below) — not current work.
 
 ## Longer-term — model cost / quality routing (not building yet)

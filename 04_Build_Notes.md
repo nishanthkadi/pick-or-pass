@@ -22,9 +22,22 @@
 - Feedback and saved listings are captured in Supabase with editable feedback per saved listing.
 - Uploaded photos are stored privately in Supabase Storage, with stable storage references on saved listing rows.
 - Analyzed listings derive short labels from listing text for easier inspection.
-- Admin review stays out of the public UI. Use the private SQL view `private.feedback_review_candidates` from Supabase SQL Editor to inspect feedback-backed listings.
+- Admin review stays out of the public UI. **Primary path:** from `app/`, run `npm run review-feedback` (list / show / reject / promote). SQL Editor on `private.feedback_review_candidates` remains a fallback.
 
-**Admin review loop:**
+**Admin review loop (CLI):**
+
+```bash
+cd app
+npm run review-feedback
+npm run review-feedback -- show <saved_listing_id>
+npm run review-feedback -- promote <id> --eval-id listing-11-example --grade avoid
+# or
+npm run review-feedback -- reject <id> --note "Not representative"
+```
+
+Promote downloads photos into `assets/`, appends a validated row to `eval/dataset.jsonl`, and sets `improvement_review_status = added_to_eval`.
+
+**SQL fallback** (optional):
 
 ```sql
 select *
@@ -32,7 +45,7 @@ from private.feedback_review_candidates
 order by feedback_updated_at desc;
 ```
 
-To mark an item as an eval candidate:
+To mark an item as an eval candidate without promoting yet:
 
 ```sql
 update public.saved_listings
@@ -50,7 +63,7 @@ insert into public.improvement_reviews (
 );
 ```
 
-Use `added_to_eval` once the case is actually added to `eval/dataset.jsonl`; use `rejected` when feedback is not reliable enough to become eval data.
+Use `added_to_eval` once the case is actually added to `eval/dataset.jsonl` (CLI does this on promote); use `rejected` when feedback is not reliable enough to become eval data.
 
 **Product lesson:** Feedback is signal, not truth. The app can collect user reactions, but a PM/reviewer still needs to decide whether the example is high-quality, representative, consented, and worth turning into an eval.
 

@@ -12,6 +12,7 @@ eval/results/*
 !eval/results/.gitignore
 eval/feedback/*
 !eval/feedback/.gitignore
+eval/_review_export/
 
 # OS / editor
 .DS_Store
