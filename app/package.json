@@ -11,6 +11,7 @@
     "eval": "tsx scripts/prompt-lab.ts",
     "eval:add": "tsx scripts/add-eval-case.ts",
     "review-feedback": "tsx scripts/review-feedback.ts",
+    "sync-prompt": "tsx scripts/sync-prompt.ts",
     "dev:stop": "powershell -ExecutionPolicy Bypass -File scripts/stop-dev.ps1"
   },
   "dependencies": {

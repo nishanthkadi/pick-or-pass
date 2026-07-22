@@ -332,6 +332,20 @@ Deploy (Phase 5)
 
 ## Implementation log
 
+### 2026-07-10 — System prompt in Supabase (sync-prompt)
+
+- `public.app_config` table (RLS on, no client policies) via `supabase/app_config.sql`
+- `getSystemPrompt()` async: local file → Supabase → `SYSTEM_PROMPT` env fallback; 60s memory cache
+- `npm run sync-prompt` upserts `system.private.txt` for production without GitHub or Vercel paste
+
+### 2026-07-10 — Public repo scrub (portfolio vs private eval)
+
+- Public examples only: `listing-1` + `listing-2` (assets, public/listings, demos, goldens)
+- Full `eval/dataset.jsonl`, extra photos/goldens/drafts, `Eval_Seed_Examples.md` gitignored (kept on disk)
+- System prompt moved to gitignored `system.private.txt` / `SYSTEM_PROMPT` env; `system.ts` is a loader + public summary
+- Docs: `PRIVATE_EVAL.md`, updated README / eval / assets notes
+- Note: git history may still contain old blobs until a history rewrite (not done)
+
 ### 2026-07-10 — v1.9 eval expansion + eval loop
 
 - **Eval dataset:** expanded from 6 → **10 cases** (`listing-7-wooden-toy`, `listing-8-dino-toy`, `listing-9-car-toy`, `listing-10-simple-toy`)

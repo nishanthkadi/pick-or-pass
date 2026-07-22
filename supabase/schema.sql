@@ -126,6 +126,15 @@ create index if not exists improvement_reviews_listing_idx
 -- which user feedback should become eval data; do not expose it in the app UI.
 create schema if not exists private;
 
+-- Server-only config (system prompt). RLS on, no client policies.
+create table if not exists public.app_config (
+  key text primary key,
+  value text not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.app_config enable row level security;
+
 create or replace view private.feedback_review_candidates as
 select
   sl.id as saved_listing_id,

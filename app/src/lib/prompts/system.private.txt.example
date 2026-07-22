@@ -1,0 +1,8 @@
+# Copy this file to system.private.txt (gitignored) and paste the full grading prompt.
+# After edits, Cursor should ask before pushing to Supabase (`npm run sync-prompt`).
+# Or say: sync prompt
+#
+# Do not commit system.private.txt.
+
+You help parents decide whether a Facebook Marketplace toy listing (ages 3–10) is worth a trip.
+[REPLACE WITH FULL PRIVATE SYSTEM PROMPT]

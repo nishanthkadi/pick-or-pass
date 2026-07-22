@@ -10,6 +10,8 @@ Pick or pass on used toy listings before you drive. Text and photo check for Fac
 npm install
 cp .env.example .env.local   # Windows: copy .env.example .env.local
 # Add GEMINI_API_KEY to .env.local
+# Ensure src/lib/prompts/system.private.txt exists (local), then:
+#   npm run sync-prompt   # upserts prompt to Supabase for Vercel
 npm run dev
 ```
 
@@ -24,25 +26,28 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run eval` | Run eval suite (live API) |
 | `npm run eval -- --score-only` | Score golden outputs without API |
 | `npm run eval -- --no-sync` | Live eval, skip demo JSON sync |
+| `npm run sync-prompt` | Upsert `system.private.txt` → Supabase `app_config` |
+| `npm run review-feedback` | Review / promote consented feedback into eval |
 
 ## Folder map
 
 | Path | Purpose |
 | --- | --- |
-| `src/lib/prompts/` | System prompt |
+| `src/lib/prompts/` | Prompt loader (`system.ts`); full prompt in private file + Supabase |
 | `src/lib/schema/` | Zod validation schema |
 | `src/lib/gemini/` | Gemini API client |
 | `src/lib/eval/` | Eval loader + rubric scorer |
-| `../eval/dataset.jsonl` | Eval source of truth |
-| `../eval/golden/` | Reference outputs |
-| `src/data/demos/` | Cached sample analyses |
-| `public/listings/` | Sample listing images |
+| `../eval/dataset.jsonl` | Full private eval set (gitignored) |
+| `../eval/dataset.example.jsonl` | Public 2-case example |
+| `../eval/golden/` | Reference outputs (listing-1/2 public) |
+| `src/data/demos/` | Cached sample analyses (listing-1/2 public) |
+| `public/listings/` | Sample listing images (listing-1/2 public) |
 | `src/app/api/analyze/` | Live analysis + BYOK |
-| `src/app/api/demo/[id]/` | Cached demo API |
+| `src/app/api/demo/[id]` | Cached demo API |
 | `src/app/api/saved-listings/` | Save listing text/photos/verdicts |
 | `src/app/api/feedback/` | Store feedback tied to saved listings when available |
 
-PM docs live in the parent folder: `../`
+PM docs live in the parent folder: `../` — see also [`../PRIVATE_EVAL.md`](../PRIVATE_EVAL.md).
 
 ## Deploy (Vercel)
 
@@ -50,15 +55,16 @@ PM docs live in the parent folder: `../`
 2. Import project in [Vercel](https://vercel.com/new).
 3. **Environment variables** (Production + Preview):
    - `GEMINI_API_KEY` — from [Google AI Studio](https://aistudio.google.com/apikey)
-   - `GEMINI_MODEL` — optional, defaults to `gemini-2.5-flash-lite`
-   - `SUPABASE_URL` — required for saved listings/photos/feedback
-   - `SUPABASE_SERVICE_ROLE_KEY` — server-only key for inserts and photo uploads
+   - `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` — required for saved listings **and** loading the system prompt
+   - `SYSTEM_PROMPT` — optional fallback only; prefer `npm run sync-prompt` → Supabase
+   - `GEMINI_MODEL` — optional, defaults to `gemini-flash-latest`
    - `SUPABASE_SAVED_LISTINGS_BUCKET` — optional, defaults to `saved-listing-photos`
-4. Deploy. Smoke-test:
-   - Home → Sample listings → open Listing 1–6 (no API key needed)
-   - Analyze your own listing (uses server key + rate limits)
+4. Run `supabase/app_config.sql` once, then `npm run sync-prompt` from `app/` with `.env.local` set.
+5. Deploy. Smoke-test:
+   - Home → Sample listings → open Listing 1–2 (no API key needed)
+   - Analyze your own listing (uses server key + rate limits; loads prompt from Supabase)
    - Save a listing and submit feedback after Supabase is configured
-5. **Rate limits:** In-memory on Hobby tier (resets on cold start). BYOK path lets users bring their own key after free checks.
+6. **Rate limits:** In-memory on Hobby tier (resets on cold start). BYOK path lets users bring their own key after free checks.
 
 ## Stack
 

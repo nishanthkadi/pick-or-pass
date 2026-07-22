@@ -8,33 +8,5 @@
     "label": "Listing 2",
     "description": "Comes with extra characters and vehicles. Meet up in 95123.",
     "imageUrls": ["/listings/listing-2.jpg"]
-  },
-  "listing-3": {
-    "label": "Listing 3",
-    "description": "Condition: Used - Good. Age Range: All ages. Its available don't ask or will be ignored and make your offer amount $ and time you want to pick up. Best offer gets it. No food or box toys included. No trays that were inside are gone!! Really cute toy. Please refer to actual item photo for reference. Sizing is about a foot tall, not life size don't ask if human size it's not!! Dimensions: Measures approximately 18\" (H) x 13.5\" (W) x 6.5\" (D).",
-    "imageUrls": [
-      "/listings/listing-3-1.jpg",
-      "/listings/listing-3-2.jpg",
-      "/listings/listing-3-3.jpg"
-    ]
-  },
-  "listing-4": {
-    "label": "Listing 4",
-    "description": "Condition: Used - Good. Character: Animal. Interactive toy farm playset has a red barn with working lights. It comes with several animal figures including a chicken, a pink mouse, a sheep, a purple horse, a green cow, and a pink rabbit.",
-    "imageUrls": [
-      "/listings/listing-4-1.jpg",
-      "/listings/listing-4-2.jpg",
-      "/listings/listing-4-3.jpg"
-    ]
-  },
-  "listing-5": {
-    "label": "Listing 5",
-    "description": "Condition: Used - like new. Think we have all pieces - basically brand new, kids never quite took to it.",
-    "imageUrls": ["/listings/listing-5-1.jpg", "/listings/listing-5-2.jpg"]
-  },
-  "listing-6": {
-    "label": "Listing 6",
-    "description": "Fair condition. Clean.",
-    "imageUrls": ["/listings/listing-6-1.jpg"]
   }
 }

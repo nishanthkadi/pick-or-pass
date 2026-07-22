@@ -1,20 +1,25 @@
 # Eval Dataset
 
-Canonical eval data for Marketplace Toy Check. **Source of truth:** `dataset.jsonl`.
+Canonical eval data for Marketplace Toy Check. **Source of truth:** `dataset.jsonl` (local / private).
 
-Human-readable summaries also live in [`../Eval_Seed_Examples.md`](../Eval_Seed_Examples.md).
+**Public repo:** only `dataset.example.jsonl` (listing-1 + listing-2) and two goldens are committed. See [`../PRIVATE_EVAL.md`](../PRIVATE_EVAL.md).
+
+Human-readable seed notes (`Eval_Seed_Examples.md`) stay local when present.
 
 ## Folder layout
 
 ```text
 eval/
-  dataset.jsonl       ← one JSON object per line (test cases)
-  golden/             ← reference model outputs
-  results/            ← run outputs (gitignored)
+  dataset.example.jsonl  ← public 2-case example (committed)
+  dataset.jsonl          ← full private set (gitignored)
+  golden/                ← listing-1/2 public; rest private
+  results/               ← run outputs (gitignored)
   README.md
-assets/               ← listing images (referenced by image_dir in dataset)
-app/src/data/demos/   ← synced cached demos for runtime ($0 demo path)
+assets/                  ← listing-1/2 public; rest private
+app/src/data/demos/      ← listing-1/2 cached demos public
 ```
+
+Fresh clone: `copy dataset.example.jsonl dataset.jsonl` then restore private cases locally.
 
 ## Add a new test case
 

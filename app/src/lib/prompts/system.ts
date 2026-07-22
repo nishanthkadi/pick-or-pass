@@ -1,106 +1,127 @@
+import fs from "node:fs";
+import path from "node:path";
+import {
+  getSupabaseAdminClient,
+  SupabaseNotConfiguredError,
+} from "@/lib/supabase/server";
+
 export const FUTURE_CAPABILITY_NOTE =
   "We don't verify prices, recalls, or seller history yet — you'll need to check these yourself. A future version of this product will do that research for you.";
 
-export const SYSTEM_PROMPT = `You help parents decide whether a Facebook Marketplace toy listing (ages 3–10) is worth a trip.
+/** Public, non-secret summary of the grading approach (safe to show in portfolio). */
+export const SYSTEM_PROMPT_PUBLIC_SUMMARY = `Visit-worthiness grader for Marketplace toys (ages 3–10).
+Photos are the truth anchor. Decision order: PHOTO SCAN → FIND → STACK → GRADE.
+Grades: Avoid (hard deal-breakers), Not sure (blocking unknowns), Good (enough to justify a trip).
+Full system prompt is loaded from a private local file or Supabase — not committed.`;
 
-Photos are the truth anchor. Return ONLY valid JSON.
+export const SYSTEM_PROMPT_CONFIG_KEY = "system_prompt";
 
-Before anything else: PHOTO SCAN, then FIND → STACK → GRADE.
+const CACHE_TTL_MS = 60_000;
 
-────────────────────────────────────────
-0. PHOTO SCAN (mandatory, before grade)
-────────────────────────────────────────
+type PromptCache = {
+  value: string;
+  fetchedAt: number;
+};
 
-Look at every photo for:
-• Stock/studio/retailer chrome with no real home context
-• Cracks, splits, or bright white stress marks/lines in plastic bases, handles, wheel mounts, or joints (structural — not dirt)
-• Chipped or flaking paint on wooden parts kids may mouth — zoom mentally on mallet heads, pegs, hammer tips, balls: bare wood showing through color = flaking (hard deal-breaker)
-• Empty compartments / far fewer accessories than a complete set
-• Promo/retail image next to a much emptier real item
+let supabasePromptCache: PromptCache | null = null;
 
-If you see structural damage or mouthable flaking paint, treat it as a hard deal-breaker even when text says fair/clean/good. Light edge scuffs on blocks are soft; large bare patches on rounded mouthable heads are Avoid.
+function injectFutureNote(prompt: string): string {
+  if (prompt.includes("${FUTURE_CAPABILITY_NOTE}")) {
+    return prompt.replaceAll("${FUTURE_CAPABILITY_NOTE}", FUTURE_CAPABILITY_NOTE);
+  }
+  if (prompt.includes(FUTURE_CAPABILITY_NOTE)) {
+    return prompt;
+  }
+  return prompt.replace(
+    /future_capability_note: exactly as provided by the product[^\n]*/,
+    `future_capability_note: exactly "${FUTURE_CAPABILITY_NOTE}"`,
+  );
+}
 
-────────────────────────────────────────
-1. GRADES
-────────────────────────────────────────
+export function resolvePrivatePromptPath(cwd = process.cwd()): string | null {
+  const candidates = [
+    path.join(cwd, "src", "lib", "prompts", "system.private.txt"),
+    path.join(cwd, "app", "src", "lib", "prompts", "system.private.txt"),
+  ];
+  for (const filePath of candidates) {
+    if (fs.existsSync(filePath)) {
+      return filePath;
+    }
+  }
+  return null;
+}
 
-• Avoid — trip unlikely to pay off even if the seller replies
-• Not sure — might be fine, but a real unknown blocks driving yet
-• Good — enough to justify a trip; confirmation questions are normal
+function loadPrivatePromptFile(): string | null {
+  const filePath = resolvePrivatePromptPath();
+  if (!filePath) return null;
+  return fs.readFileSync(filePath, "utf8").trim();
+}
 
-────────────────────────────────────────
-2. FIND
-────────────────────────────────────────
+async function loadPromptFromSupabase(): Promise<string | null> {
+  const now = Date.now();
+  if (
+    supabasePromptCache &&
+    now - supabasePromptCache.fetchedAt < CACHE_TTL_MS
+  ) {
+    return supabasePromptCache.value;
+  }
 
-HARD DEAL-BREAKER (clearly visible → Avoid; never Good)
-• Stock/studio/retailer page as the ONLY photo of the item
-• Structural damage on load-bearing parts (including white stress marks that look like fractures)
-• Mouthable paint risk — heavily chipped/flaking paint on mouthable parts (esp. vs good/clean/like-new text)
-• Severe incompleteness — toy not worth chasing (many missing pieces / empty compartments / promo vs bare reality)
+  try {
+    const supabase = getSupabaseAdminClient();
+    const { data, error } = await supabase
+      .from("app_config")
+      .select("value")
+      .eq("key", SYSTEM_PROMPT_CONFIG_KEY)
+      .maybeSingle();
 
-BLOCKING UNKNOWN (→ Not sure; never Good)
-• Lights/sounds/motors/interactive features part of the product but not clearly shown powered-on in photos
-  – Painted lanterns, stickers, translucent plastic, or "looks like it could light" do NOT count as verified working
-• Complex playset / multi-room house / large accessory set with only 1–2 vague sentences (e.g. "comes with extras" / "characters and vehicles") — even if the photo looks complete and packed. Photos of complex sets do not replace specific text (price, condition, what is included, age).
-• Do NOT treat a multi-room house or character playset as a "simple toy" just because the photo looks complete.
+    if (error) {
+      console.error("[system-prompt] Supabase read failed:", error.message);
+      return null;
+    }
 
-SOFT / HYGIENE (alone never Avoid or Not sure)
-• Missing price; confirm piece count when photo already looks complete; one small missing piece; light cosmetic scuffs; brief text on a simple toy with clear photos
+    const value = data?.value?.trim();
+    if (!value) return null;
 
-POSITIVE ANCHORS (for Good)
-• Real home photo + clear identity + (listed price OR retail screenshot beside real photos OR simple-toy completeness visible in photos)
+    supabasePromptCache = { value, fetchedAt: now };
+    return value;
+  } catch (err) {
+    if (err instanceof SupabaseNotConfiguredError) {
+      return null;
+    }
+    console.error("[system-prompt] Supabase read error:", err);
+    return null;
+  }
+}
 
-────────────────────────────────────────
-3. STACK → GRADE (stop at first match)
-────────────────────────────────────────
+/** Clear in-memory cache (used after sync-prompt). */
+export function clearSystemPromptCache(): void {
+  supabasePromptCache = null;
+}
 
-① Hard deal-breaker visible? → Avoid
-   Never Good. Never Not sure to "ask about" it.
-   Optimistic text vs damaged/stock/incomplete photo → text_photo_alignment = "contradicts" AND grade = avoid
-   If alignment is "contradicts", grade MUST be avoid.
+/**
+ * Full system prompt for Gemini.
+ * Order: local private file (dev) → Supabase private.app_config → SYSTEM_PROMPT env.
+ */
+export async function getSystemPrompt(): Promise<string> {
+  const fromFile = loadPrivatePromptFile();
+  if (fromFile) {
+    return injectFutureNote(fromFile);
+  }
 
-② Else blocking unknown? → Not sure
-   Unverified interactive/motors always qualify.
-   Sparse text on a complex playset always qualifies — even with a strong photo.
-   Never Good with "ask if it works" or "looks complete so Good" on a complex sparse listing.
+  const fromSupabase = await loadPromptFromSupabase();
+  if (fromSupabase) {
+    return injectFutureNote(fromSupabase);
+  }
 
-③ Else positive anchors? → Good
-   Soft/hygiene only in visit_summary / seller_questions. Missing price does not demote Good.
+  const fromEnv = process.env.SYSTEM_PROMPT?.trim();
+  if (fromEnv) {
+    return injectFutureNote(fromEnv);
+  }
 
-④ Else → Not sure
+  throw new Error(
+    "System prompt not configured. Create app/src/lib/prompts/system.private.txt, run `npm run sync-prompt` to store it in Supabase, or set SYSTEM_PROMPT as a fallback.",
+  );
+}
 
-────────────────────────────────────────
-4. OUTPUT
-────────────────────────────────────────
-
-• grade: good | not_sure | avoid
-• grade_label: Good | Not sure | Avoid
-• visit_summary (~120 chars) using the usual templates for each grade
-• text_photo_alignment: matches | partially_matches | contradicts | insufficient_text
-• alignment_summary: string
-• mismatches: array of 0–3 {issue, sources}; [] if none
-• reasons: max 5; {text, source: text|photo|text_and_photo, sentiment: positive|neutral|concern}
-  – Avoid → photo-sourced deal-breaker reason required
-  – Not sure → name the blocking unknown
-• limitations: 3–5
-• seller_questions: max 6
-• seller_message_draft: string
-• research_recommended: 2–4
-• future_capability_note: exactly "${FUTURE_CAPABILITY_NOTE}"
-
-No invented prices/recalls/trust. Location must not affect grade.
-
-────────────────────────────────────────
-5. NEVER
-────────────────────────────────────────
-
-• Good when a hard deal-breaker is visible in photos
-• Ignoring white stress marks/cracks in plastic bases because text says clean/fair
-• Calling wooden toys "good condition" when mallet heads/pegs show bare wood through flaking paint
-• Treating one missing small piece as the only issue when mouthable paint wear is also visible
-• Not sure instead of Avoid just to ask about a visible hard deal-breaker
-• Good when interactive features are claimed but not clearly shown powered-on (painted lantern ≠ working lights)
-• Good when interactive features are unverified
-• Not sure solely for missing price or routine piece confirmation on a solid listing
-• Hype, absolute commands, invasive questions, proximity grading
-`;
+/** @deprecated Prefer getSystemPrompt() — kept for any accidental static imports during migration. */
+export const SYSTEM_PROMPT = SYSTEM_PROMPT_PUBLIC_SUMMARY;

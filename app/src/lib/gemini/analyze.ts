@@ -2,7 +2,7 @@ import {
   GoogleGenerativeAI,
   type Part,
 } from "@google/generative-ai";
-import { SYSTEM_PROMPT } from "@/lib/prompts/system";
+import { getSystemPrompt } from "@/lib/prompts/system";
 import {
   parseAnalysisResponse,
   type AnalysisResult,
@@ -159,7 +159,7 @@ export async function analyzeListing(
       temperature: 0.1,
       maxOutputTokens: 4096,
     },
-    systemInstruction: SYSTEM_PROMPT,
+    systemInstruction: await getSystemPrompt(),
   });
 
   const woodCue = /\b(wood|wooden|natural wood|xylophone|mallet)\b/i.test(

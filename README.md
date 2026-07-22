@@ -4,7 +4,7 @@
 
 **Live demo:** https://pick-or-pass-seven.vercel.app/
 
-Paste listing text, add a photo, get **Good / Not sure / Avoid** with reasons and seller questions — or try six real sample listings with no API key.
+Paste listing text, add a photo, get **Good / Not sure / Avoid** with reasons and seller questions — or try two public sample listings with no API key.
 
 ## Problem & user
 
@@ -25,7 +25,7 @@ Pick or Pass encodes parent + Marketplace + toy context once, requires both text
 | Ship | Defer |
 |------|-------|
 | Good / Not sure / Avoid grades | Web research, recalls, price verification |
-| 6 cached sample listings | User accounts |
+| 2 public sample listings (full eval set stays private) | User accounts |
 | Server key + rate limits + BYOK | Browser extension |
 | Eval set from real Marketplace listings | Fine-tuning |
 
@@ -44,22 +44,23 @@ Pick or Pass encodes parent + Marketplace + toy context once, requires both text
 
 ## What I built
 
-- **Next.js app** on Vercel (`app/`) — landing, 6 sample demos, live analyze API
-- **Eval infrastructure** — `eval/dataset.jsonl` (6 real listings), golden outputs, rubric scorer, `--score-only` / `--no-sync` CLI
-- **Prompt iteration** — 6/6 grade match after tuning for visible damage, incomplete sets, and missing-price cases
+- **Next.js app** on Vercel (`app/`) — landing, 2 public sample demos, live analyze API
+- **Eval infrastructure** — private `eval/dataset.jsonl` + public `dataset.example.jsonl`, golden outputs, rubric scorer, `--score-only` / `--no-sync` CLI
+- **Prompt iteration** — grade-match tuned on a private labeled set; system prompt loaded from env / private file (not committed)
 - **Saved listings + feedback loop** — users can save listing text/photos/verdicts for themselves, revisit saved listings on the same browser, and share feedback that stores the case for reviewed improvement
+
+**Privacy:** Full eval photos, goldens beyond the two examples, seed notes, and the grading prompt are gitignored. See [`PRIVATE_EVAL.md`](./PRIVATE_EVAL.md).
 
 ## Metrics & evaluation
 
-Built a labeled eval set before prompt tweaking (not after vibes):
+Built a labeled eval set before prompt tweaking (not after vibes). **Public examples** show the shape of the work:
 
-| Grade | Cases | Example signal |
-|-------|-------|----------------|
-| Good | 2 | Strong text-photo match, retail screenshot or detail |
-| Not sure | 2 | Sparse text or no price / unverified features |
-| Avoid | 2 | Structural damage, severely incomplete set |
+| Grade | Public example | Signal |
+|-------|----------------|--------|
+| Good | `listing-1` | Strong text-photo match, real seller photo |
+| Not sure | `listing-2` | Sparse text on a complex playset |
 
-**Results:** 6/6 grade match after prompt iteration. Rubric scorer checks themes, seller questions, visit summary, and guardrails for regression.
+Private local eval covers additional Good / Not sure / Avoid cases (damage, incompleteness, paint risk, etc.). Rubric scorer checks themes, seller questions, visit summary, and guardrails for regression.
 
 ## Screenshots
 

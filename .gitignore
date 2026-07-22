@@ -7,12 +7,43 @@ app/.vercel/
 app/.env*
 app/*.tsbuildinfo
 
-# Eval run logs (golden + dataset are committed)
+# Private system prompt (full grading rules — not for public GitHub)
+app/src/lib/prompts/system.private.txt
+!app/src/lib/prompts/system.private.txt.example
+
+# Eval run logs
 eval/results/*
 !eval/results/.gitignore
 eval/feedback/*
 !eval/feedback/.gitignore
 eval/_review_export/
+
+# Private eval set (keep locally; only examples are public)
+eval/dataset.jsonl
+eval/drafts/**
+!eval/drafts/.gitkeep
+eval/golden/*
+!eval/golden/listing-1.json
+!eval/golden/listing-2.json
+Eval_Seed_Examples.md
+
+# Private listing photos (public examples: listing-1, listing-2 only)
+assets/*
+!assets/README.md
+!assets/listing-1.jpg
+!assets/listing-2.jpg
+app/public/listings/*
+!app/public/listings/listing-1.jpg
+!app/public/listings/listing-2.jpg
+
+# Extra demo JSON beyond the two public examples
+app/src/data/demos/listing-3.json
+app/src/data/demos/listing-4.json
+app/src/data/demos/listing-5.json
+app/src/data/demos/listing-6.json
+app/src/data/demos/listing-*.json
+!app/src/data/demos/listing-1.json
+!app/src/data/demos/listing-2.json
 
 # OS / editor
 .DS_Store
