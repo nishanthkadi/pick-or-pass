@@ -36,7 +36,10 @@ export function ResultsView({
       <div className="space-y-4">
         <ListingContext listing={listing} defaultOpen={false} />
         <AnalysisDetails result={analysis} />
-        <FeedbackCard analysis={analysis} context={feedbackContext} />
+        {(feedbackContext.source === "analyze" ||
+          Boolean(feedbackContext.savedListingId)) && (
+          <FeedbackCard analysis={analysis} context={feedbackContext} />
+        )}
       </div>
     </section>
   );
