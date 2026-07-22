@@ -16,6 +16,6 @@ export async function GET() {
     });
   } catch (err) {
     console.error("[api/demos]", err);
-    return apiError(500, "DEMOS_ERROR", "Could not load sample listings.");
+    return apiError(500, "SERVER_MISCONFIGURED", "Could not load sample listings.");
   }
 }
