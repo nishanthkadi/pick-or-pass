@@ -332,6 +332,12 @@ Deploy (Phase 5)
 
 ## Implementation log
 
+### 2026-07-10 — Sample demos on Supabase
+
+- `demo_listings` table + public `demo-listings` bucket (`supabase/demos.sql`)
+- `npm run sync-demos` uploads listing 1–6 images + cached analyses
+- App loads catalog from `/api/demos` (Supabase first, local 1–2 fallback)
+
 ### 2026-07-10 — System prompt in Supabase (sync-prompt)
 
 - `public.app_config` table (RLS on, no client policies) via `supabase/app_config.sql`

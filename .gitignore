@@ -44,6 +44,7 @@ app/src/data/demos/listing-6.json
 app/src/data/demos/listing-*.json
 !app/src/data/demos/listing-1.json
 !app/src/data/demos/listing-2.json
+app/src/data/demos/manifest.local.json
 
 # OS / editor
 .DS_Store

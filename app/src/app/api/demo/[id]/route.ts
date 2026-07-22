@@ -8,11 +8,12 @@ type RouteContext = {
 
 export async function GET(_req: Request, context: RouteContext) {
   const { id } = await context.params;
-  const demo = loadDemo(id);
+  const demo = await loadDemo(id);
 
   if (!demo) {
+    const available = await listDemoIds();
     return apiError(404, "NOT_FOUND", `Demo not found: ${id}`, {
-      available: listDemoIds(),
+      available,
     });
   }
 

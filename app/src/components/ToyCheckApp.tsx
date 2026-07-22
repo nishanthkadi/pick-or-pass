@@ -15,7 +15,6 @@ import type { DemoListing } from "@/lib/demos/getDemo";
 import { useOwnerToken } from "@/lib/saved-listings/owner-token";
 import type { AnalysisResult } from "@/lib/schema/analysis";
 import { useReturningVisitor } from "@/lib/use-returning-visitor";
-import manifest from "@/data/demos/manifest.json";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type View = "home" | "examples" | "analyze" | "saved" | "results";
@@ -30,16 +29,6 @@ type ApiErrorBody = {
   error?: string;
   code?: string;
 };
-
-const DEMO_CATALOG: DemoSummary[] = Object.entries(manifest).map(
-  ([id, entry]) => ({
-    id,
-    label: entry.label,
-    description: entry.description,
-    imageUrl: entry.imageUrls[0],
-    photoCount: entry.imageUrls.length,
-  }),
-);
 
 const BUSY_AUTO_RETRY_SECONDS = 5;
 
@@ -67,6 +56,8 @@ export function ToyCheckApp() {
   const ownerToken = useOwnerToken();
 
   const [view, setView] = useState<View>("home");
+  const [demoCatalog, setDemoCatalog] = useState<DemoSummary[]>([]);
+  const [demosLoading, setDemosLoading] = useState(true);
   const [listingText, setListingText] = useState("");
   const [sellerStarRating, setSellerStarRating] = useState("");
   const [images, setImages] = useState<File[]>([]);
@@ -111,6 +102,36 @@ export function ToyCheckApp() {
       clearBusyRetrySchedule();
     };
   }, [clearBusyRetrySchedule]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setDemosLoading(true);
+    void (async () => {
+      try {
+        const res = await fetch("/api/demos");
+        const data = (await res.json()) as {
+          demos?: DemoSummary[];
+          error?: string;
+        };
+        if (!res.ok) {
+          throw new Error(data.error ?? "Could not load sample listings.");
+        }
+        if (!cancelled) {
+          setDemoCatalog(data.demos ?? []);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setDemoCatalog([]);
+          console.error(err);
+        }
+      } finally {
+        if (!cancelled) setDemosLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -316,8 +337,8 @@ export function ToyCheckApp() {
 
       {view === "examples" && (
         <ExamplePicker
-          demos={DEMO_CATALOG}
-          loading={loading}
+          demos={demoCatalog}
+          loading={loading || demosLoading}
           onSelect={(id) => void goResultsFromDemo(id)}
           onBack={goHome}
         />

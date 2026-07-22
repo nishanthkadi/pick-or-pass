@@ -14,6 +14,19 @@ The public GitHub repo showcases the product and **two** sample listings (`listi
 | `app/src/lib/prompts/system.ts` (loader + public summary) | `system.private.txt` + Supabase `app_config` |
 | Process docs (`eval/README.md`, skills, review-feedback CLI) | `Eval_Seed_Examples.md` |
 
+## Sample listings (Supabase demos)
+
+**Production catalog:** table `demo_listings` + public Storage bucket `demo-listings`.
+
+```bash
+# Once: run supabase/demos.sql in SQL editor
+cd app
+npm run sync-demos
+```
+
+Uses local `manifest.local.json` (all samples, gitignored) when present, else `manifest.json`.
+Live app loads `/api/demos` from Supabase (falls back to committed listing-1/2 files).
+
 ## System prompt (Option B — Supabase)
 
 **Source of truth for production:** Supabase table `app_config` key `system_prompt` (RLS on, no client policies — service role only).

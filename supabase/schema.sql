@@ -135,6 +135,19 @@ create table if not exists public.app_config (
 
 alter table public.app_config enable row level security;
 
+-- Sample demos for the live Example picker (synced via npm run sync-demos).
+create table if not exists public.demo_listings (
+  id text primary key,
+  label text not null,
+  description text not null,
+  sort_order int not null default 0,
+  image_urls text[] not null default '{}',
+  analysis jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.demo_listings enable row level security;
+
 create or replace view private.feedback_review_candidates as
 select
   sl.id as saved_listing_id,

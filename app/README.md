@@ -27,6 +27,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run eval -- --score-only` | Score golden outputs without API |
 | `npm run eval -- --no-sync` | Live eval, skip demo JSON sync |
 | `npm run sync-prompt` | Upsert `system.private.txt` → Supabase `app_config` |
+| `npm run sync-demos` | Upsert sample listings → Supabase `demo_listings` + Storage |
 | `npm run review-feedback` | Review / promote consented feedback into eval |
 
 ## Folder map
@@ -59,9 +60,11 @@ PM docs live in the parent folder: `../` — see also [`../PRIVATE_EVAL.md`](../
    - `SYSTEM_PROMPT` — optional fallback only; prefer `npm run sync-prompt` → Supabase
    - `GEMINI_MODEL` — optional, defaults to `gemini-flash-latest`
    - `SUPABASE_SAVED_LISTINGS_BUCKET` — optional, defaults to `saved-listing-photos`
-4. Run `supabase/app_config.sql` once, then `npm run sync-prompt` from `app/` with `.env.local` set.
+4. Run `supabase/app_config.sql` and `supabase/demos.sql` once, then from `app/`:
+   - `npm run sync-prompt`
+   - `npm run sync-demos`
 5. Deploy. Smoke-test:
-   - Home → Sample listings → open Listing 1–2 (no API key needed)
+   - Home → Sample listings → open any synced sample (no API key needed)
    - Analyze your own listing (uses server key + rate limits; loads prompt from Supabase)
    - Save a listing and submit feedback after Supabase is configured
 6. **Rate limits:** In-memory on Hobby tier (resets on cold start). BYOK path lets users bring their own key after free checks.
